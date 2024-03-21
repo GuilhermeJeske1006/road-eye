@@ -1,25 +1,21 @@
 import React, { useEffect, useState } from "react";
 import MapView, { Marker } from "react-native-maps";
 import {
-  Button,
   FlatList,
-  Image,
   SafeAreaView,
-  StatusBar,
   StyleSheet,
   Text,
   TextInput,
-  Touchable,
   TouchableOpacity,
   View,
+  AppRegistry
 } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import 'react-native-gesture-handler';
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import "react-native-gesture-handler";
 import {
   requestForegroundPermissionsAsync,
   getCurrentPositionAsync,
@@ -27,23 +23,32 @@ import {
   watchPositionAsync,
   LocationAccuracy,
 } from "expo-location";
-import CheckBox from "@react-native-community/checkbox";
-import { Colors } from "react-native/Libraries/NewAppScreen";
-import { red } from "react-native-reanimated/lib/typescript/reanimated2/Colors";
+import LoginScreen from "./screen/Login";
+
 
 const Drawer = createDrawerNavigator();
 
 const Tab = createBottomTabNavigator();
 
-function SettingsScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Settings!</Text>
-    </View>
-  );
-}
+const MyTheme = {
+  dark: true,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: "#fff",
+    background: "#fff",
+    card: "#EDB047",
+    text: "#fff",
+    border: "#fff",
+    notification: "#fff",
+  },
+};
+
+AppRegistry.registerComponent('my-app', () => LoginScreen);
+AppRegistry.runApplication('my-app', { rootTag: document.getElementById('root') });
+
 
 export default function App() {
+
   const [location, setLocation] = useState<null | LocationObject>(null);
 
   const isDriver = useState<boolean>(false);
@@ -59,7 +64,7 @@ export default function App() {
   const [state, onChangeState] = useState("");
   const [complement, onChangeComplement] = useState("");
   const [number, onChangeNumber] = useState("");
-
+  
 
   async function requestLocationPermission() {
     const granted = requestForegroundPermissionsAsync();
@@ -100,105 +105,169 @@ export default function App() {
     console.log(data);
   }
 
-  async function submitLogin() {
-    setIsAuth(true);
-    return HomeScreen;
-  }
+ 
 
   function ListAdress() {
     return (
-      <View style={styles.adressContainer}>
-        <TouchableOpacity onPress={() => setListAdress(false)} style={styles.cloneModal}>
+      <View  style={styles.adressContainer}>
+        <TouchableOpacity
+          onPress={() => setListAdress(false)}
+          style={styles.cloneModal}
+        >
           <Ionicons name="remove-outline" size={50} />
         </TouchableOpacity>
         <Text style={styles.titleAdress}>Seus endereços</Text>
         <Text style={styles.item}>
-          <Icon name="map-marker-circle" style={styles.iconMap} size={25} margin={20} />
-
+          <Icon
+            name="map-marker-circle"
+            style={styles.iconMap}
+            size={25}
+            margin={20}
+          />
           Usar localização atual
         </Text>
+
         <FlatList
           data={[
-            { key: '1', adress: 'Rua 1', number: 1, cep: 123456, city: 'São Paulo', state: 'SP', complement: 'Casa' },
-            { key: '2', adress: 'Rua 1', number: 1, cep: 123456, city: 'São Paulo', state: 'SP', complement: 'Casa' },
-            { key: '3', adress: 'Rua 1', number: 1, cep: 123456, city: 'São Paulo', state: 'SP', complement: 'Casa' },
-            { key: '4', adress: 'Rua 1', number: 1, cep: 123456, city: 'São Paulo', state: 'SP', complement: 'Casa' },
-            { key: '5', adress: 'Rua 1', number: 1, cep: 123456, city: 'São Paulo', state: 'SP', complement: 'Casa' },
-
+            {
+              key: "1",
+              adress: "Rua 1",
+              number: 1,
+              cep: 123456,
+              city: "São Paulo",
+              state: "SP",
+              complement: "Casa",
+            },
+            {
+              key: "2",
+              adress: "Rua 1",
+              number: 1,
+              cep: 123456,
+              city: "São Paulo",
+              state: "SP",
+              complement: "Casa",
+            },
+            {
+              key: "3",
+              adress: "Rua 1",
+              number: 1,
+              cep: 123456,
+              city: "São Paulo",
+              state: "SP",
+              complement: "Casa",
+            },
+            {
+              key: "4",
+              adress: "Rua 1",
+              number: 1,
+              cep: 123456,
+              city: "São Paulo",
+              state: "SP",
+              complement: "Casa",
+            },
+            {
+              key: "5",
+              adress: "Rua 1",
+              number: 1,
+              cep: 123456,
+              city: "São Paulo",
+              state: "SP",
+              complement: "Casa",
+            },
           ]}
-          renderItem={({ item }) =>
-          <TouchableOpacity onPress={() => setOpenCheck(false)}>
-
-            <Text style={styles.itemSchool} >
-              <Icon name="map-marker-circle" style={styles.iconMap} size={25} margin={20} />
-              {item.city}, {item.state}, {item.cep}
-            </Text>
-            </TouchableOpacity>}
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => setOpenCheck(false)}>
+              <Text style={styles.item}>
+                <Icon
+                  name="map-marker-circle"
+                  style={styles.iconMap}
+                  size={25}
+                  margin={20}
+                />
+                {item.city}, {item.state}, {item.cep}
+              </Text>
+            </TouchableOpacity>
+          )}
         />
-        <Text onPress={() => {
-          setOpenAdress(true);
-          setListAdress(false);
-        }} style={styles.item}>
+        <Text
+          onPress={() => {
+            setOpenAdress(true);
+            setListAdress(false);
+          }}
+          style={styles.item}
+        >
           Cadastrar novo endereço
         </Text>
       </View>
-    )
+    );
   }
 
   function CheckUser() {
     return (
       <View style={styles.adressContainer}>
-        <TouchableOpacity onPress={() => setOpenCheck(false)} style={styles.cloneModal}>
+        <TouchableOpacity
+          onPress={() => setOpenCheck(false)}
+          style={styles.cloneModal}
+        >
           <Ionicons name="remove-outline" size={50} />
         </TouchableOpacity>
         <Text style={styles.titleAdress}>Selecione a sua escola</Text>
 
         <FlatList
           data={[
-            { key: 'Escola S' },
-            { key: 'SENAI', },
-            { key: 'E.B.M Anna othilia' },
-
+            { key: "Escola S" },
+            { key: "SENAI" },
+            { key: "E.B.M Anna othilia" },
           ]}
-          renderItem={({ item }) =>
+          renderItem={({ item }) => (
             <TouchableOpacity onPress={() => setOpenCheck(false)}>
               <Text style={styles.itemSchool}>
-                <Icon name="school" style={styles.iconMap} size={25} margin={20} />
+                <Icon
+                  name="school"
+                  style={styles.iconMap}
+                  size={25}
+                  margin={20}
+                />
                 {item.key}
               </Text>
-            </TouchableOpacity>}
+            </TouchableOpacity>
+          )}
         />
 
         <Text style={styles.titleAdress}>Selecione a sua escola</Text>
 
         <FlatList
           data={[
-            { key: 'Não irei' },
-            { key: 'Somente ida', },
-            { key: 'Somente a volta' },
-            { key: 'Ida e volta' },
-
-
+            { key: "Não irei" },
+            { key: "Somente ida" },
+            { key: "Somente a volta" },
+            { key: "Ida e volta" },
           ]}
-          renderItem={({ item }) =>
+          renderItem={({ item }) => (
             <TouchableOpacity onPress={() => setOpenCheck(false)}>
               <Text style={styles.itemSchool}>
-                <Icon name="school" style={styles.iconMap} size={25} margin={20} />
+                <Icon
+                  name="school"
+                  style={styles.iconMap}
+                  size={25}
+                  margin={20}
+                />
                 {item.key}
               </Text>
-            </TouchableOpacity>}
+            </TouchableOpacity>
+          )}
         />
-
-
       </View>
-
-    )
+    );
   }
 
   function StoreAdress() {
     return (
       <View style={styles.adressContainer}>
-        <TouchableOpacity onPress={() => setOpenAdress(false)} style={styles.cloneModal}>
+        <TouchableOpacity
+          onPress={() => setOpenAdress(false)}
+          style={styles.cloneModal}
+        >
           <Ionicons name="remove-outline" size={50} />
         </TouchableOpacity>
         <SafeAreaView style={{ marginBottom: 5 }}>
@@ -207,6 +276,7 @@ export default function App() {
             style={styles.input}
             onChangeText={onChangeCep}
             placeholder="CEP"
+            value={cep}
             keyboardType="numeric"
           />
           <TextInput
@@ -251,26 +321,7 @@ export default function App() {
     );
   }
 
-  function LoginScreen() {
-    return (
-      <View style={{ flex: 1, margin: 30, justifyContent: 'center' }}>
-        <Image source={require('./assets/icon.png')} style={[styles.image, { marginBottom: 40 }]}></Image >
-        <TextInput
-          style={styles.input}
-          placeholder="Digite seu email"
-          keyboardType="email-address"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Digite sua senha"
-          secureTextEntry={true}
-        />
-        <TouchableOpacity onPress={submitLogin} style={[styles.button, { marginTop: 40 }]}>
-          <Text>Entrar</Text>
-        </TouchableOpacity>
-      </View>
-    )
-  }
+
 
   function HomeScreen({ navigation }) {
     return (
@@ -295,40 +346,53 @@ export default function App() {
             />
           </MapView>
         )}
-        {
-          openNewAdress && <StoreAdress />
-        }
-        {
-          isUSer && <TouchableOpacity onPress={() => setListAdress(true)} style={styles.buttonOpenList}>
-            <Icon name="format-list-bulleted" style={styles.iconMap} size={30} margin={20} />
+        {openNewAdress && <StoreAdress />}
+        {isUSer && (
+          <TouchableOpacity
+            onPress={() => setListAdress(true)}
+            style={styles.buttonOpenList}
+          >
+            <Icon
+              name="format-list-bulleted"
+              style={styles.iconMap}
+              size={30}
+              margin={20}
+            />
           </TouchableOpacity>
-        }
-        {
-          isUSer && <TouchableOpacity onPress={() => setOpenCheck(true)} style={styles.buttonOpenCheck}>
-            <Icon name="format-list-checks" style={styles.iconMap} size={30} margin={20} />
+        )}
+        {isUSer && (
+          <TouchableOpacity
+            onPress={() => setOpenCheck(true)}
+            style={styles.buttonOpenCheck}
+          >
+            <Icon
+              name="format-list-checks"
+              style={styles.iconMap}
+              size={30}
+              margin={20}
+            />
           </TouchableOpacity>
-        }
-        {
-          openListAdress && <ListAdress />
-        }
-        {
-          openCheck && <CheckUser />
-        }
-
+        )}
+        {openListAdress && <ListAdress />}
+        {openCheck && <CheckUser />}
       </View>
     );
   }
 
   return (
-    <NavigationContainer>
-      <Drawer.Navigator initialRouteName="Home">
-        <Drawer.Screen name="Home" component={HomeScreen} />
-        <Drawer.Screen name="Login" component={LoginScreen} />
-      </Drawer.Navigator>
-    </NavigationContainer>
+    <View style={{ flex: 1, justifyContent: "center" }}>
+      {isAuth ? (
+        <NavigationContainer theme={MyTheme}>
+          <Drawer.Navigator initialRouteName="Home">
+            <Drawer.Screen name="Home" component={HomeScreen} />
+            <Drawer.Screen name="Login" component={LoginScreen} />
+          </Drawer.Navigator>
+        </NavigationContainer>
+      ) : (
+        <LoginScreen />
+      )}
+    </View>
   );
-
-
 }
 
 const styles = StyleSheet.create({
@@ -362,7 +426,8 @@ const styles = StyleSheet.create({
     height: 50,
     margin: 5,
     borderWidth: 1,
-    fontFamily: 'Roboto',
+    fontFamily: "Roboto",
+    fontSize: 15,
     color: "#44433F",
     padding: 10,
     borderColor: "#3B566E",
@@ -373,22 +438,20 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   button: {
-    alignItems: 'center',
-    backgroundColor: '#BC1C2C',
+    alignItems: "center",
+    backgroundColor: "#BC1C2C",
     padding: 20,
     borderRadius: 20,
     marginTop: 10,
-    fontFamily: 'Roboto',
-    fontWeight: 'bold',
+    fontFamily: "Roboto",
+    fontWeight: "bold",
     fontSize: 20,
-    color: '#fff',
-
+    color: "#fff",
   },
   item: {
-    padding: 10,
+    padding: 16,
+    borderTopColor: "#EDB047",
     fontSize: 18,
-    fontFamily: 'Roboto',
-    color: "#3B566E",
   },
   iconMap: {
     color: "#EDB047",
@@ -411,16 +474,21 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   itemSchool: {
-    padding: 10,
+    padding: 12,
     fontSize: 18,
     // backgroundColor: "#EDB047",
     borderRadius: 20,
-    marginBottom: 6,
+    marginBottom: 8,
     borderWidth: 1,
   },
   image: {
     width: 200,
     height: 200,
-    alignSelf: 'center',
-  }
+    alignSelf: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 15,
+    fontWeight: "bold",
+  },
 });
