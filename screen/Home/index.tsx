@@ -3,7 +3,7 @@ import MapView, { Marker } from "react-native-maps";
 import StoreAdress from "../../components/storeAdress";
 import ListAdress from "../../components/listAdress";
 import CheckUser from "../../components/checkUser";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   requestForegroundPermissionsAsync,
   getCurrentPositionAsync,
@@ -16,6 +16,8 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 
 export default function HomeScreen() {
+
+  const mapRef = useRef<MapView>(null)
   const [location, setLocation] = useState<null | LocationObject>(null);
 
   const isDriver = useState<boolean>(true);
@@ -48,6 +50,10 @@ export default function HomeScreen() {
       },
       (location) => {
         setLocation(location);
+        mapRef.current?.animateCamera({
+            pitch: 70,
+            center: location.coords
+        })
       }
     );
   }, []);
@@ -64,6 +70,7 @@ export default function HomeScreen() {
     <View style={{ justifyContent: "center", alignItems: "center" }}>
       {location && (
         <MapView
+        ref={mapRef}
           initialRegion={{
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
@@ -155,7 +162,7 @@ export default function HomeScreen() {
         style={styles.buttonSpeed}
       >
 
-        <Text style={styles.textSpeed}>0 km/h</Text>
+        <Text style={styles.textSpeed}>{location.coords.speed.toFixed()} km/h</Text>
       </TouchableOpacity>
 
       {openListAdress && <ListAdress open={openListAdress} onCloseList={handleListClose} />}
