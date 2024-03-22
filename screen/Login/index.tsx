@@ -1,4 +1,6 @@
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Component, useState } from "react";
 import {
   StyleSheet,
@@ -33,23 +35,35 @@ function ForgotScreen({navigation, route}) {
 }
 
 
-export default function LoginScreen(props: {onAuth: (isAuth: boolean) => void }, {navigation}) {
+export default function LoginScreen(props: {onAuth: (isAuth: boolean) => void }) {
 
-  const [email, setEmail] = useState('d');
-  const [senha, setSenha] = useState('d');
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const [errors, setErrors] = useState({
+    emailRequired: "",
+    passwordRequired: "",
+  } as any);
 
-  function submitLogin() {
+  const validateLogin = () => {
+    const newErrors = {
+      emailRequired: email === '' ? 'Por favor, preencha o campo email' : '',
+      passwordRequired: senha === '' ? 'Por favor, preencha o campo senha' : '',
+    };
+    setErrors(newErrors);
+    return !newErrors.emailRequired && !newErrors.passwordRequired;
+  };
 
-    if (email === "" && senha === "") {
-      return;
+  const submitLogin = () => {
+    if (validateLogin()) {
+      console.log(email, senha);
+      props.onAuth(true);
     }
-    console.log(email, senha);
-    props.onAuth(true);
-  }
+  };
 
-  function goForgotPassword () {
-    navigation.navigate('Forgot');
-  }
+  const navigation = createNativeStackNavigator();
+
+
+ 
 
   return (
     <KeyboardAvoidingView behavior="padding" style={{ flex: 1, margin: 30, justifyContent: "center" }}>
@@ -57,12 +71,18 @@ export default function LoginScreen(props: {onAuth: (isAuth: boolean) => void },
         source={require("../../assets/logo.png")}
         style={[styles.image, { marginBottom: 40 }]}
       ></Image>
+      {
+        errors.emailRequired && <Text style={{ color: 'red' }}>{errors.emailRequired}</Text>
+      }
       <TextInput
         style={styles.input}
         placeholder="Digite seu email"
         keyboardType="email-address"
         onChangeText={text => setEmail(text)}
       />
+      {
+        errors.passwordRequired && <Text style={{ color: 'red' }}>{errors.passwordRequired}</Text>
+      }
       <TextInput
         style={styles.input}
         placeholder="Digite sua senha"
@@ -70,10 +90,13 @@ export default function LoginScreen(props: {onAuth: (isAuth: boolean) => void },
         onChangeText={text => setSenha(text)}
       />
 
-          <NativeScreen 
+
+          <TouchableOpacity 
+                  
+
         >
         <Text style={[styles.buttonText, {marginLeft: 20, color: '#000'}]}>Esqueci minha senha?</Text>
-      </NativeScreen>
+      </TouchableOpacity>
       <TouchableOpacity
         onPress={submitLogin}
         style={[styles.button, { marginTop: 30 }]}

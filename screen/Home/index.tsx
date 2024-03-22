@@ -12,6 +12,8 @@ import {
   LocationAccuracy,
 } from "expo-location";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import MapViewDirections from "react-native-maps-directions";
+import CustomMarker from "../../components/customMarker";
 
 
 
@@ -27,6 +29,11 @@ export default function HomeScreen() {
   const [openListAdress, setListAdress] = useState<boolean>(false);
   const [openCheck, setOpenCheck] = useState<boolean>(false);
   const [openCardMarker, setOpenCardMarker] = useState<boolean>(false);
+  const GOOGLE_MAPS_APIKEY = 'AIzaSyBaMRuorLtC5E6MZWFYKcdvkGxJAxZmQ18';
+  const [destinationLocation, setDestinationLocation] = useState(null);
+  const [originLocation, setOriginLocation] = useState(null);
+  const origin = { latitude: 37.3318456, longitude: -122.0296002 };
+  const destination = { latitude: 37.771707, longitude: -122.4053769 };
 
   async function requestLocationPermission() {
     const granted = requestForegroundPermissionsAsync();
@@ -51,8 +58,8 @@ export default function HomeScreen() {
       (location) => {
         setLocation(location);
         mapRef.current?.animateCamera({
-            pitch: 70,
-            center: location.coords
+          pitch: 70,
+          center: location.coords,
         })
       }
     );
@@ -67,24 +74,86 @@ export default function HomeScreen() {
     setOpenCheck(isOpen);
   }
 
-  const teste = () => {
-    setOpenCardMarker(false);
-    console.log(openCardMarker, 'teste')
+
+  const getDirections = (latitude, longitude) => {
+    setDestinationLocation({
+      latitude: latitude,
+      longitude: longitude
+    })
+  }
+  const setLocalOrigin = (local) => {
+    setOriginLocation({
+      latitude: -27.082058843712982, longitude: -48.96839966171515
+    })
+    console.log(originLocation, 'origin');
+  }
+
+  const setLocalDestination = (local) => {
+    setDestinationLocation({
+      latitude: -27.084351414741224, longitude: -48.969569104890034
+    })
+    console.log(local, 'local');
   }
 
   return (
     <View style={{ justifyContent: "center", alignItems: "center" }}>
       {location && (
         <MapView
-        ref={mapRef}
+          ref={mapRef}
           initialRegion={{
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
             latitudeDelta: 0.005,
             longitudeDelta: 0.005,
           }}
+          showsUserLocation={true}
+          showsMyLocationButton={false}
+          zoomControlEnabled={true}
+          loadingEnabled={true}
+          loadingBackgroundColor={'#fff'}
+          toolbarEnabled={false}
           style={styles.map}
         >
+          <CustomMarker
+            latitude={-23.5544}
+            longitude={-46.6296}
+            color={"#0F9D58"}
+            id={'1'}
+            onPress={getDirections}
+          >
+          </CustomMarker>
+          <CustomMarker
+            latitude={-23.5583}
+            longitude={-46.6282}
+            color={"#EDB047"}
+            id={'2'}
+            onPress={getDirections}
+          >
+          </CustomMarker>
+          {destinationLocation ?
+            <MapViewDirections
+              origin={
+                originLocation || location.coords
+              }
+              destination={
+                destinationLocation
+              }
+              apikey={GOOGLE_MAPS_APIKEY}
+              strokeWidth={5}
+              strokeColor="#EDB047"
+              lineDashPattern={[0]}
+              optimizeWaypoints={true}
+              resetOnChange={false}
+              precision={'high'}
+              onError={(errorMessage) => {
+                setDestinationLocation(null);
+                alert('Erro ao obter direções...');
+              }}
+            >
+            </MapViewDirections>
+            :
+            null
+          }
           <Marker
             coordinate={{
               latitude: location.coords.latitude,
@@ -92,7 +161,6 @@ export default function HomeScreen() {
             }}
             onPress={() => { setOpenCardMarker(true) }}
           >
-            
             <Icon
               name="map-marker"
               color="#BC1C2C"
@@ -129,50 +197,49 @@ export default function HomeScreen() {
         </TouchableOpacity>
       )}
 
-{
-              openCardMarker && (
-                <View style={styles.card} >
-                  <TouchableOpacity onPress={() => { setOpenCardMarker(false) }} style={{ alignItems: 'flex-end' }} >
-                    <Icon name="close" size={20} color="#000" />
-                  </TouchableOpacity>
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Image
-                      source={{ uri: 'https://picsum.photos/id/237/200/300' }}
-                      style={{ width: 100, height: 100, borderRadius: 100, }}
-                    ></Image>
+      {
+        openCardMarker && (
+          <View style={styles.card} >
+            <TouchableOpacity onPress={() => { setOpenCardMarker(false) }} style={{ alignItems: 'flex-end' }} >
+              <Icon name="close" size={20} color="#000" />
+            </TouchableOpacity>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Image
+                source={{ uri: 'https://picsum.photos/id/237/200/300' }}
+                style={{ width: 100, height: 100, borderRadius: 100, }}
+              ></Image>
 
-                    <Text style={[styles.title, { textAlign: 'center', alignItems: 'center', justifyContent: 'center', marginLeft: 10 }]}>12C2-ABC</Text>
+              <Text style={[styles.title, { textAlign: 'center', alignItems: 'center', justifyContent: 'center', marginLeft: 10 }]}>12C2-ABC</Text>
 
-                  </View>
+            </View>
 
-                  <Text style={styles.title}>Motorista José Maria</Text>
-                  <Text style={styles.content}>Para SENAI</Text>
+            <Text style={styles.title}>Motorista José Maria</Text>
+            <Text style={styles.content}>Para SENAI</Text>
 
-                  <TouchableOpacity
-                    style={[styles.button, {
-                      marginTop: 20, flexDirection: 'row',
-                      alignItems: 'center',
-                    }]}
-                  >
-                    <Icon name="phone" size={20} color="#fff" />
-                    <Text style={styles.buttonText}>
-                      Ligar</Text>
-                  </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.button, {
+                marginTop: 20, flexDirection: 'row',
+                alignItems: 'center',
+              }]}
+            >
+              <Icon name="phone" size={20} color="#fff" />
+              <Text style={styles.buttonText}>
+                Ligar</Text>
+            </TouchableOpacity>
 
-                </View>
+          </View>
 
-              )
-            }
+        )
+      }
 
       <TouchableOpacity
         style={styles.buttonSpeed}
       >
-
         <Text style={styles.textSpeed}>{location?.coords.speed.toFixed()} km/h</Text>
       </TouchableOpacity>
 
-      {openListAdress && <ListAdress open={openListAdress} onCloseList={handleListClose} />}
-      {openCheck && <CheckUser onCloseCheck={handleCheckClose} />}
+      {openListAdress && <ListAdress open={openListAdress} onCloseList={handleListClose} setLocal={setLocalOrigin} />}
+      {openCheck && <CheckUser onCloseCheck={handleCheckClose} setLocal={setLocalDestination} />}
     </View>
   );
 }
@@ -197,8 +264,8 @@ const styles = StyleSheet.create({
   },
   buttonOpenList: {
     position: "absolute",
-    bottom: 20,
-    right: 20,
+    bottom: 110,
+    right: 5,
     backgroundColor: "white",
     borderRadius: 50,
   },
@@ -225,8 +292,8 @@ const styles = StyleSheet.create({
   },
   buttonOpenCheck: {
     position: "absolute",
-    bottom: 100,
-    right: 20,
+    bottom: 200,
+    right: 5,
     backgroundColor: "white",
     borderRadius: 50,
   },

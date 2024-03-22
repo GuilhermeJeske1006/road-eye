@@ -5,14 +5,19 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import StoreAdress from "./storeAdress";
 
 
-export default function ListAdress(props: { open: boolean, onCloseList: (isOpenList: boolean) => void }) {
+export default function ListAdress(props: { open: boolean, onCloseList: (isOpenList: boolean) => void, setLocal: (local: object) => void}) {
   const [openNewAdress, setOpenAdress] = useState<boolean>(false);
   const [openListAdress, setListAdress] = useState<boolean>(false);
   const [openCheck, setOpenCheck] = useState<boolean>(false);
 
   const [selectedItemGo, setSelectedItemGo] = useState(null);
-  const [selectedItemSchool, setSelectedItemSchool] = useState(null);
 
+
+  const setSelectedItem = (item) => {
+    props.setLocal(item);
+    setSelectedItemGo(item);
+    console.log(item);
+  }
   const data = [
     {
       key: "1",
@@ -67,7 +72,7 @@ export default function ListAdress(props: { open: boolean, onCloseList: (isOpenL
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={[styles.itemSchool, selectedItemGo === item.key && styles.selectedItemGo]}
-      onPress={() => setSelectedItemGo(item.key)}
+      onPress={() => setSelectedItem(item.key)}
     >
       <Icon
         name={selectedItemGo === item.key ? 'checkbox-blank-circle-outline' : 'map-marker-circle'}
@@ -131,9 +136,6 @@ export default function ListAdress(props: { open: boolean, onCloseList: (isOpenL
         renderItem={renderItem}
         keyExtractor={(item) => item.key}
       />
-
-
-
 
       <TouchableOpacity
         onPress={() => {

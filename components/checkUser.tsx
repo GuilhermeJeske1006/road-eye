@@ -3,7 +3,7 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useState } from "react";
 
-export default function CheckUser(props: { onCloseCheck: (isOpenCheck: boolean) => void }) {
+export default function CheckUser(props: { onCloseCheck: (isOpenCheck: boolean) => void,  setLocal: (local: object) => void}) {
   const [openCheck, setOpenCheck] = useState<boolean>(false);
 
   const handleCheckClose = () => {
@@ -17,6 +17,7 @@ export default function CheckUser(props: { onCloseCheck: (isOpenCheck: boolean) 
       return;
     }
     console.log(selectedItemGo, selectedItemSchool);
+    props.setLocal(selectedItemSchool);
     handleCheckClose();
   }
 

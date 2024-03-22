@@ -8,6 +8,7 @@ import "react-native-gesture-handler";
 import TesteScreen from "./screen/Teste";
 import LoginScreen from "./screen/Login";
 import HomeScreen from "./screen/Home";
+import ProfileScreen from "./screen/Profile";
 
 const Drawer = createDrawerNavigator();
 
@@ -41,8 +42,7 @@ export default function App() {
         <NavigationContainer theme={MyTheme}>
           <Drawer.Navigator initialRouteName="Home">
             <Drawer.Screen name="Home" component={HomeScreen}  />
-            <Drawer.Screen name="Teste" component={TesteScreen} options={{title: 'Teste'}}
-/>
+            <Drawer.Screen name="Perfil" component={ProfileScreen}  />
           </Drawer.Navigator>
         </NavigationContainer>
       ) : (

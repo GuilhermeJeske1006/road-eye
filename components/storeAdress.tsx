@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { SafeAreaView, ScrollViewComponent, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useEffect, useState } from "react";
@@ -35,7 +35,7 @@ export default function StoreAdress(props: { open: boolean, onClose: (isOpen: bo
     };
 
     return (
-        <View style={styles.adressContainer}>
+        <ScrollViewComponent style={styles.adressContainer}>
             <TouchableOpacity
                 onPress={handleCloseModal}
                 style={styles.cloneModal}
@@ -92,7 +92,7 @@ export default function StoreAdress(props: { open: boolean, onClose: (isOpen: bo
       >
         <Text style={styles.buttonText}>Entrar</Text>
       </TouchableOpacity>
-        </View>
+        </ScrollViewComponent>
     );
 }
 
