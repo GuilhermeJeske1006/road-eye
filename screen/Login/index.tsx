@@ -1,7 +1,4 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Component, useState } from "react";
+import { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -9,30 +6,9 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Image,
+  View,
 } from "react-native";
-import { NativeScreen } from "react-native-screens";
-
-function ForgotScreen({navigation, route}) {
-  return(
-    <KeyboardAvoidingView behavior="padding" style={{ flex: 1, margin: 30, justifyContent: "center" }}>
-      <Image
-        source={require("../../assets/logo.png")}
-        style={[styles.image, { marginBottom: 40 }]}
-      ></Image>
-      <TextInput
-        style={styles.input}
-        placeholder="Digite seu email"
-        keyboardType="email-address"
-      />
-      <TouchableOpacity
-        onPress={() => navigation.navigate('Teste')}
-        style={[styles.button, { marginTop: 30 }]}
-      >
-        <Text style={styles.buttonText}>Enviar</Text>
-      </TouchableOpacity>
-    </KeyboardAvoidingView>
-  );
-}
+import ForgotScreen from "../Forgot";
 
 
 export default function LoginScreen(props: {onAuth: (isAuth: boolean) => void }) {
@@ -43,6 +19,8 @@ export default function LoginScreen(props: {onAuth: (isAuth: boolean) => void })
     emailRequired: "",
     passwordRequired: "",
   } as any);
+
+  const [openForgot, setOpenForgot] = useState<boolean>(false);
 
   const validateLogin = () => {
     const newErrors = {
@@ -60,56 +38,55 @@ export default function LoginScreen(props: {onAuth: (isAuth: boolean) => void })
     }
   };
 
-  const navigation = createNativeStackNavigator();
-
-
- 
+  const onCloseForgot = (isOpen) => {
+    setOpenForgot(false);
+  };
 
   return (
-    <KeyboardAvoidingView behavior="padding" style={{ flex: 1, margin: 30, justifyContent: "center" }}>
-      <Image
-        source={require("../../assets/logo.png")}
-        style={[styles.image, { marginBottom: 40 }]}
-      ></Image>
+    <View  style={{ flex: 1, margin: 30, justifyContent: "center" }}>
       {
-        errors.emailRequired && <Text style={{ color: 'red' }}>{errors.emailRequired}</Text>
+        openForgot ? 
+          <ForgotScreen  openForgot={openForgot}  onCloseForgot={onCloseForgot} email={email}/> :
+          <KeyboardAvoidingView behavior="padding">
+      
+          <Image
+            source={require("../../assets/logo.png")}
+            style={[styles.image, { marginBottom: 40 }]}
+          ></Image>
+          {
+            errors.emailRequired && <Text style={{ color: 'red' }}>{errors.emailRequired}</Text>
+          }
+          <TextInput
+            style={styles.input}
+            placeholder="Digite seu email"
+            keyboardType="email-address"
+            onChangeText={text => setEmail(text)}
+          />
+          {
+            errors.passwordRequired && <Text style={{ color: 'red' }}>{errors.passwordRequired}</Text>
+          }
+          <TextInput
+            style={styles.input}
+            placeholder="Digite sua senha"
+            secureTextEntry
+            onChangeText={text => setSenha(text)}
+          />
+              <TouchableOpacity 
+              onPress={() => setOpenForgot(true)}
+            >
+            <Text style={[styles.buttonText, {marginLeft: 20, color: '#000'}]}>Esqueci minha senha?</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={submitLogin}
+            style={[styles.button, { marginTop: 30 }]}
+          >
+            <Text style={styles.buttonText}>Entrar</Text>
+          </TouchableOpacity>
+        </KeyboardAvoidingView>
       }
-      <TextInput
-        style={styles.input}
-        placeholder="Digite seu email"
-        keyboardType="email-address"
-        onChangeText={text => setEmail(text)}
-      />
-      {
-        errors.passwordRequired && <Text style={{ color: 'red' }}>{errors.passwordRequired}</Text>
-      }
-      <TextInput
-        style={styles.input}
-        placeholder="Digite sua senha"
-        secureTextEntry
-        onChangeText={text => setSenha(text)}
-      />
-
-
-          <TouchableOpacity 
-                  
-
-        >
-        <Text style={[styles.buttonText, {marginLeft: 20, color: '#000'}]}>Esqueci minha senha?</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={submitLogin}
-        style={[styles.button, { marginTop: 30 }]}
-      >
-        <Text style={styles.buttonText}>Entrar</Text>
-      </TouchableOpacity>
-    </KeyboardAvoidingView>
+    </View>
   );
-
 }
-
-
-
 const styles = StyleSheet.create({
   input: {
     borderRadius: 20,
