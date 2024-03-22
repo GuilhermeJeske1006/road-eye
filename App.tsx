@@ -9,9 +9,7 @@ import TesteScreen from "./screen/Teste";
 import LoginScreen from "./screen/Login";
 import HomeScreen from "./screen/Home";
 
-
 const Drawer = createDrawerNavigator();
-
 
 const MyTheme = {
   dark: true,
@@ -26,15 +24,11 @@ const MyTheme = {
   },
 };
 
-
-
 export default function App() {
 
   const isDriver = useState<boolean>(true);
   const [isAuth, setIsAuth] = useState<boolean>(false);
   const isUSer = useState<boolean>(true);
-
-
 
   const Login = (isAuth: boolean) => {
     setIsAuth(isAuth);
@@ -46,8 +40,9 @@ export default function App() {
       {isAuth ? (
         <NavigationContainer theme={MyTheme}>
           <Drawer.Navigator initialRouteName="Home">
-            <Drawer.Screen name="Home" component={HomeScreen} />
-            <Drawer.Screen name="Teste" component={TesteScreen} />
+            <Drawer.Screen name="Home" component={HomeScreen}  />
+            <Drawer.Screen name="Teste" component={TesteScreen} options={{title: 'Teste'}}
+/>
           </Drawer.Navigator>
         </NavigationContainer>
       ) : (

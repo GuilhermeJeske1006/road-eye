@@ -1,4 +1,4 @@
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { Component, useState } from "react";
 import {
   StyleSheet,
@@ -8,9 +8,32 @@ import {
   KeyboardAvoidingView,
   Image,
 } from "react-native";
+import { NativeScreen } from "react-native-screens";
+
+function ForgotScreen({navigation, route}) {
+  return(
+    <KeyboardAvoidingView behavior="padding" style={{ flex: 1, margin: 30, justifyContent: "center" }}>
+      <Image
+        source={require("../../assets/logo.png")}
+        style={[styles.image, { marginBottom: 40 }]}
+      ></Image>
+      <TextInput
+        style={styles.input}
+        placeholder="Digite seu email"
+        keyboardType="email-address"
+      />
+      <TouchableOpacity
+        onPress={() => navigation.navigate('Teste')}
+        style={[styles.button, { marginTop: 30 }]}
+      >
+        <Text style={styles.buttonText}>Enviar</Text>
+      </TouchableOpacity>
+    </KeyboardAvoidingView>
+  );
+}
 
 
-export default function LoginScreen(props: {onAuth: (isAuth: boolean) => void }) {
+export default function LoginScreen(props: {onAuth: (isAuth: boolean) => void }, {navigation}) {
 
   const [email, setEmail] = useState('d');
   const [senha, setSenha] = useState('d');
@@ -24,8 +47,8 @@ export default function LoginScreen(props: {onAuth: (isAuth: boolean) => void })
     props.onAuth(true);
   }
 
-  function forgotPassword() {
-    console.log('Esqueci minha senha');
+  function goForgotPassword () {
+    navigation.navigate('Forgot');
   }
 
   return (
@@ -46,11 +69,11 @@ export default function LoginScreen(props: {onAuth: (isAuth: boolean) => void })
         secureTextEntry
         onChangeText={text => setSenha(text)}
       />
-          <TouchableOpacity
-        onPress={forgotPassword}
-      >
+
+          <NativeScreen 
+        >
         <Text style={[styles.buttonText, {marginLeft: 20, color: '#000'}]}>Esqueci minha senha?</Text>
-      </TouchableOpacity>
+      </NativeScreen>
       <TouchableOpacity
         onPress={submitLogin}
         style={[styles.button, { marginTop: 30 }]}

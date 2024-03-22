@@ -18,7 +18,7 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 export default function HomeScreen() {
 
   const mapRef = useRef<MapView>(null)
-  const [location, setLocation] = useState<null | LocationObject>(null);
+  const [location, setLocation] = useState<null | LocationObject>();
 
   const isDriver = useState<boolean>(true);
   const [isAuth, setIsAuth] = useState<boolean>(false);
@@ -58,12 +58,18 @@ export default function HomeScreen() {
     );
   }, []);
 
+
   const handleListClose = (isOpen) => {
     setListAdress(isOpen);
   }
 
   const handleCheckClose = (isOpen) => {
     setOpenCheck(isOpen);
+  }
+
+  const teste = () => {
+    setOpenCardMarker(false);
+    console.log(openCardMarker, 'teste')
   }
 
   return (
@@ -85,43 +91,8 @@ export default function HomeScreen() {
               longitude: location.coords.longitude,
             }}
             onPress={() => { setOpenCardMarker(true) }}
-
           >
-
-            {
-              openCardMarker && (
-                <View style={styles.card}>
-                  <TouchableOpacity style={{ alignItems: 'flex-end' }}>
-                    <Icon name="close" size={20} color="#000" />
-                  </TouchableOpacity>
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Image
-                      source={{ uri: 'https://picsum.photos/id/237/200/300' }}
-                      style={{ width: 100, height: 100, borderRadius: 100, }}
-                    ></Image>
-
-                    <Text style={[styles.title, { textAlign: 'center', alignItems: 'center', justifyContent: 'center', marginLeft: 10 }]}>12C2-ABC</Text>
-
-                  </View>
-
-                  <Text style={styles.title}>Motorista José Maria</Text>
-                  <Text style={styles.content}>Para SENAI</Text>
-
-                  <TouchableOpacity
-                    style={[styles.button, {
-                      marginTop: 20, flexDirection: 'row',
-                      alignItems: 'center',
-                    }]}
-                  >
-                    <Icon name="phone" size={20} color="#fff" />
-                    <Text style={styles.buttonText}>
-                      Ligar</Text>
-                  </TouchableOpacity>
-
-                </View>
-
-              )
-            }
+            
             <Icon
               name="map-marker"
               color="#BC1C2C"
@@ -158,11 +129,46 @@ export default function HomeScreen() {
         </TouchableOpacity>
       )}
 
+{
+              openCardMarker && (
+                <View style={styles.card} >
+                  <TouchableOpacity onPress={() => { setOpenCardMarker(false) }} style={{ alignItems: 'flex-end' }} >
+                    <Icon name="close" size={20} color="#000" />
+                  </TouchableOpacity>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Image
+                      source={{ uri: 'https://picsum.photos/id/237/200/300' }}
+                      style={{ width: 100, height: 100, borderRadius: 100, }}
+                    ></Image>
+
+                    <Text style={[styles.title, { textAlign: 'center', alignItems: 'center', justifyContent: 'center', marginLeft: 10 }]}>12C2-ABC</Text>
+
+                  </View>
+
+                  <Text style={styles.title}>Motorista José Maria</Text>
+                  <Text style={styles.content}>Para SENAI</Text>
+
+                  <TouchableOpacity
+                    style={[styles.button, {
+                      marginTop: 20, flexDirection: 'row',
+                      alignItems: 'center',
+                    }]}
+                  >
+                    <Icon name="phone" size={20} color="#fff" />
+                    <Text style={styles.buttonText}>
+                      Ligar</Text>
+                  </TouchableOpacity>
+
+                </View>
+
+              )
+            }
+
       <TouchableOpacity
         style={styles.buttonSpeed}
       >
 
-        <Text style={styles.textSpeed}>{location.coords.speed.toFixed()} km/h</Text>
+        <Text style={styles.textSpeed}>{location?.coords.speed.toFixed()} km/h</Text>
       </TouchableOpacity>
 
       {openListAdress && <ListAdress open={openListAdress} onCloseList={handleListClose} />}
@@ -230,7 +236,10 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     padding: 30,
     shadowColor: '#000',
-    width: '100%',
+    width: '80%',
+    position: 'absolute',
+    bottom: 20,
+    zIndex: 100,
     shadowOffset: {
       width: 0,
       height: 2,

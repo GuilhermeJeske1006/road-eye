@@ -1,4 +1,5 @@
-import { Component, useState } from "react";
+import { watchPositionAsync } from "expo-location";
+import { Component, useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -9,7 +10,7 @@ import {
 } from "react-native";
 
 
-export default function LoginScreen(props: {onAuth: (isAuth: boolean) => void }) {
+export default function ForgotScreen({navigation}) {
 
   const [email, setEmail] = useState('d');
   const [senha, setSenha] = useState('d');
@@ -20,9 +21,12 @@ export default function LoginScreen(props: {onAuth: (isAuth: boolean) => void })
       return;
     }
     console.log(email, senha);
-    props.onAuth(true);
   }
 
+  useEffect(() => {
+    navigation
+    console.log(navigation);
+  }, [navigation]);
   function forgotPassword() {
     console.log('forgot password');
   }
