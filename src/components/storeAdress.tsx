@@ -1,7 +1,9 @@
 import { SafeAreaView, ScrollViewComponent, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCep } from "../store/Adress/thunks";
 
 export default function StoreAdress(props: { open: boolean, onClose: (isOpen: boolean) => void }) {
     const [cep, onChangeCep] = useState("");
@@ -12,10 +14,17 @@ export default function StoreAdress(props: { open: boolean, onClose: (isOpen: bo
     const [complement, onChangeComplement] = useState("");
     const [number, onChangeNumber] = useState("");
     const [openNewAdress, setOpenAdress] = useState<boolean>(false);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         setOpenAdress(props.open);
     }, [props.open]);
+    
+
+    const handleGetCep = () => {
+        const response =  dispatch(fetchCep(cep));
+        console.log(response)
+      };
 
     async function handleSubmit() {
         const data = {
@@ -35,7 +44,7 @@ export default function StoreAdress(props: { open: boolean, onClose: (isOpen: bo
     };
 
     return (
-        <ScrollViewComponent style={styles.adressContainer}>
+        <View style={styles.adressContainer}>
             <TouchableOpacity
                 onPress={handleCloseModal}
                 style={styles.cloneModal}
@@ -46,7 +55,7 @@ export default function StoreAdress(props: { open: boolean, onClose: (isOpen: bo
                 <Text style={styles.titleAdress}>Adicione um novo endereço</Text>
                 <TextInput
                     style={styles.input}
-                    onChangeText={onChangeCep}
+                    onChangeText={handleGetCep}
                     placeholder="CEP"
                     value={cep}
                     keyboardType="numeric"
@@ -92,7 +101,7 @@ export default function StoreAdress(props: { open: boolean, onClose: (isOpen: bo
       >
         <Text style={styles.buttonText}>Entrar</Text>
       </TouchableOpacity>
-        </ScrollViewComponent>
+        </View>
     );
 }
 

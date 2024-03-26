@@ -50,7 +50,7 @@ export default function LoginScreen(props: {onAuth: (isAuth: boolean) => void })
           <KeyboardAvoidingView behavior="padding">
       
           <Image
-            source={require("../../assets/logo.png")}
+            source={require('../../assets/logo.png')}
             style={[styles.image, { marginBottom: 40 }]}
           ></Image>
           {
