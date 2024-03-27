@@ -11,6 +11,9 @@ import {
     Button,
     ScrollView,
 } from "react-native";
+import { InputText } from "../../components/geral/input-text";
+import BtnPrimary from "../../components/geral/btn-primary";
+import TextError from "../../components/geral/text-error";
 
 export default function ProfileScreen(props: { onAuth: (isAuth: boolean) => void }) {
     const [email, setEmail] = useState('');
@@ -33,50 +36,50 @@ export default function ProfileScreen(props: { onAuth: (isAuth: boolean) => void
         confirmPassword: '',
         name: '',
         isEmail: '',
-    
+
     });
 
     const formatCpf = (text) => {
         // Remove qualquer caracter que não seja número
         const formattedCpf = text.replace(/[^\d]/g, '');
-    
+
         // Adiciona os pontos e o traço conforme o formato do CPF
         if (formattedCpf.length > 3 && formattedCpf.length <= 6) {
-          return formattedCpf.slice(0, 3) + '.' + formattedCpf.slice(3);
+            return formattedCpf.slice(0, 3) + '.' + formattedCpf.slice(3);
         } else if (formattedCpf.length > 6 && formattedCpf.length <= 9) {
-          return formattedCpf.slice(0, 3) + '.' + formattedCpf.slice(3, 6) + '.' + formattedCpf.slice(6);
+            return formattedCpf.slice(0, 3) + '.' + formattedCpf.slice(3, 6) + '.' + formattedCpf.slice(6);
         } else if (formattedCpf.length > 9) {
-          return (
-            formattedCpf.slice(0, 3) +
-            '.' +
-            formattedCpf.slice(3, 6) +
-            '.' +
-            formattedCpf.slice(6, 9) +
-            '-' +
-            formattedCpf.slice(9)
-          );
+            return (
+                formattedCpf.slice(0, 3) +
+                '.' +
+                formattedCpf.slice(3, 6) +
+                '.' +
+                formattedCpf.slice(6, 9) +
+                '-' +
+                formattedCpf.slice(9)
+            );
         }
-    
-        return formattedCpf;
-      };
 
-      const formatPhoneNumber = (text) => {
+        return formattedCpf;
+    };
+
+    const formatPhoneNumber = (text) => {
         // Remove qualquer caracter que não seja número
         const formattedNumber = text.replace(/[^\d]/g, '');
-    
+
         // Verifica o comprimento do número e aplica a máscara adequada
         if (formattedNumber.length <= 2) {
-          return formattedNumber;
+            return formattedNumber;
         } else if (formattedNumber.length <= 6) {
-          return `(${formattedNumber.slice(0, 2)}) ${formattedNumber.slice(2)}`;
+            return `(${formattedNumber.slice(0, 2)}) ${formattedNumber.slice(2)}`;
         } else if (formattedNumber.length <= 10) {
-          return `(${formattedNumber.slice(0, 2)}) ${formattedNumber.slice(2, 6)}-${formattedNumber.slice(6)}`;
+            return `(${formattedNumber.slice(0, 2)}) ${formattedNumber.slice(2, 6)}-${formattedNumber.slice(6)}`;
         } else {
-          return `(${formattedNumber.slice(0, 2)}) ${formattedNumber.slice(2, 7)}-${formattedNumber.slice(7, 11)}`;
+            return `(${formattedNumber.slice(0, 2)}) ${formattedNumber.slice(2, 7)}-${formattedNumber.slice(7, 11)}`;
         }
-      };
+    };
 
-      
+
 
     const validateSubmit = () => {
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -115,59 +118,59 @@ export default function ProfileScreen(props: { onAuth: (isAuth: boolean) => void
 
     function submit() {
 
-        if(validateSubmit()){
+        if (validateSubmit()) {
             console.log(email, senha, phone, cpf, password, confirmPassword, name);
         }
-        
+
     }
 
     const validatePassword = () => {
-    
+
         if (password === '') {
             errors.passwordRequired = 'Senha é obrigatória';
-        } else{
+        } else {
             delete errors.passwordRequired;
         }
         if (password.length < 6) {
             errors.passwordMin = 'Senha deve ter no mínimo 6 caracteres';
-        }else{
+        } else {
             delete errors.passwordMin;
         }
-    
+
         if (confirmPassword === '') {
             errors.confirmPasswordRequired = 'Confirmar senha é obrigatória';
-        } else{
+        } else {
             delete errors.confirmPasswordRequired;
         }
         if (confirmPassword.length < 6) {
             errors.confirmPasswordMin = 'Confirmar senha deve ter no mínimo 6 caracteres';
-        }else{
+        } else {
             delete errors.confirmPasswordMin;
         }
-    
+
         if (password !== confirmPassword) {
             errors.passwordDifferent = 'Senhas não conferem';
-        }else{
+        } else {
             delete errors.passwordDifferent;
         }
-    
+
         setErrors({ ...errors, ...errors });
 
-        if(errors.passwordRequired || errors.passwordMin || errors.confirmPasswordRequired || errors.confirmPasswordMin || errors.passwordDifferent){
+        if (errors.passwordRequired || errors.passwordMin || errors.confirmPasswordRequired || errors.confirmPasswordMin || errors.passwordDifferent) {
             return false;
         }
 
         return true;
-    
+
     };
-    
-    function submitPassword() {        
+
+    function submitPassword() {
         if (validatePassword()) {
             console.log(password, 'Nova senha salva com sucesso!');
         }
     }
-    
-    
+
+
 
     return (
         <ScrollView style={{ backgroundColor: '#F2F2F2' }}>
@@ -177,54 +180,42 @@ export default function ProfileScreen(props: { onAuth: (isAuth: boolean) => void
                     Dados do Perfil
                 </Text>
                 {
-                    errors.name && <Text style={{ color: 'red' }}>{errors.name}</Text>
+                    errors.name && <TextError error={errors.name} />
                 }
-
-                <TextInput
-                    style={styles.input}
+                <InputText
+                    setFn={text => setName(text)}
                     placeholder="Digite seu Nome"
                     value={name}
-
-                    onChangeText={text => setName(text)}
                 />
                 {
-                    errors.email && <Text style={{ color: 'red' }}>{errors.email}</Text>
+                    errors.email && <TextError error={errors.email} />
                 }
                 {
-                    errors.isEmail && <Text style={{ color: 'red' }}>{errors.isEmail}</Text>
+                    errors.isEmail && <TextError error={errors.isEmail} />
                 }
-                <TextInput
-                    style={styles.input}
+                <InputText
+                    setFn={text => setEmail(text)}
                     placeholder="Digite seu email"
+                    attribute={{ keyboardType: "email-address" }}
                     value={email}
-                    onChangeText={text => setEmail(text)}
                 />
-                <TextInput
-                    style={styles.input}
+                <InputText
+                    setFn={text => setPhone(formatPhoneNumber(text))}
                     placeholder="Digite seu telefone"
-                    keyboardType="numeric"
+                    attribute={{ keyboardType: "numeric" }}
                     value={phone}
-
-                    onChangeText={text => setPhone(formatPhoneNumber(text))}
                 />
                 {
-                    errors.cpf && <Text style={{ color: 'red' }}>{errors.cpf}</Text>
+                    errors.cpf && <TextError error={errors.cpf} />
                 }
-                <TextInput
-                    style={styles.input}
+                <InputText
+                    setFn={text => setCpf(formatCpf(text))}
                     placeholder="Digite seu cpf"
-                    keyboardType="numeric"
+                    attribute={{ keyboardType: "numeric" }}
                     value={cpf}
-                    onChangeText={text => setCpf(formatCpf(text))}
                 />
 
-
-                <TouchableOpacity
-                    onPress={submit}
-                    style={[styles.button, { marginTop: 30 }]}
-                >
-                    <Text style={styles.buttonText}>Atualizar dados</Text>
-                </TouchableOpacity>
+                <BtnPrimary fn={submit} text="Atualizar dados" />
 
 
                 <Text style={[styles.titleAdress, { marginTop: 60 }]}>
@@ -232,39 +223,33 @@ export default function ProfileScreen(props: { onAuth: (isAuth: boolean) => void
                 </Text>
 
                 {
-                    errors.passwordRequired && <Text style={{ color: 'red' }}>{errors.passwordRequired}</Text>
+                    errors.passwordRequired && <TextError error={errors.passwordRequired} />
                 }
                 {
-                    errors.passwordMin && <Text style={{ color: 'red' }}>{errors.passwordMin}</Text>
+                    errors.passwordMin && <TextError error={errors.passwordMin} />
                 }
                 {
-                    errors.passwordDifferent && <Text style={{ color: 'red' }}>{errors.passwordDifferent}</Text>
+                    errors.passwordDifferent && <TextError error={errors.passwordDifferent} />
                 }
                 {
-                    errors.confirmPasswordRequired && <Text style={{ color: 'red' }}>{errors.confirmPasswordRequired}</Text>
+                    errors.confirmPasswordRequired && <TextError error={errors.confirmPasswordRequired} />
                 }
                 {
-                    errors.confirmPasswordMin && <Text style={{ color: 'red' }}>{errors.confirmPasswordMin}</Text>
+                    errors.confirmPasswordMin && <TextError error={errors.confirmPasswordMin} />
                 }
-                <TextInput
-                    style={styles.input}
+
+                <InputText
+                    setFn={text => setPassword(text)}
                     placeholder="Digite sua senha"
-                    secureTextEntry
-                    onChangeText={text => setPassword(text)}
+                    attribute={{ secureTextEntry: true }}
                 />
-                <TextInput
-                    style={styles.input}
+                <InputText
+                    setFn={text => setConfirmPassword(text)}
                     placeholder="Cofirme sua senha"
-                    secureTextEntry
-                    onChangeText={text => setConfirmPassword(text)}
+                    attribute={{ secureTextEntry: true }}
                 />
 
-                <TouchableOpacity
-                    onPress={submitPassword}
-                    style={[styles.button, { marginTop: 30 }]}
-                >
-                    <Text style={styles.buttonText}>Atualizar Senha</Text>
-                </TouchableOpacity>
+                <BtnPrimary fn={submitPassword} text="Alterar senha" />
 
             </KeyboardAvoidingView>
 
@@ -272,38 +257,6 @@ export default function ProfileScreen(props: { onAuth: (isAuth: boolean) => void
     );
 }
 const styles = StyleSheet.create({
-    input: {
-        borderRadius: 20,
-        marginBottom: 10,
-        height: 55,
-        margin: 5,
-        paddingLeft: 20,
-        fontFamily: 'sans-serif',
-        fontSize: 15,
-        padding: 15,
-        backgroundColor: "#FFFFFF",
-    },
-    buttonText: {
-        color: "#fff",
-        fontSize: 15,
-        fontWeight: "bold",
-    },
-    image: {
-        width: 200,
-        height: 200,
-        alignSelf: "center",
-    },
-    button: {
-        alignItems: "center",
-        backgroundColor: "#BC1C2C",
-        padding: 17,
-        borderRadius: 20,
-        marginTop: 10,
-        fontFamily: "Roboto",
-        fontWeight: "bold",
-        fontSize: 20,
-        color: "#fff",
-    },
     titleAdress: {
         fontSize: 20,
         fontWeight: "bold",

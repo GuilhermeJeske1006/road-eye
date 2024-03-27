@@ -1,28 +1,29 @@
 // reducers.ts
 
 import { Adress } from '../../Interfaces/adress';
+import { Users } from '../../Interfaces/users';
 import api from '../../services/api';
-import { CepActionTypes, FETCH_CEP_REQUEST, FETCH_CEP_SUCCESS, FETCH_CEP_FAILURE } from './actions';
+import { UserActionTypes, FETCH_USER_REQUEST, FETCH_USER_SUCCESS, FETCH_USER_FAILURE } from './actions';
 
-interface CepState {
-  data: Adress | null;
+interface UserState {
+  data: Users | null;
   loading: boolean;
   error: string | null;
 }
 
-const initialState: CepState = {
+const initialState: UserState = {
   data: null,
   loading: false,
   error: null,
 };
 
-const cepReducer = (state = initialState, action: CepActionTypes): CepState => {
+const userReducer = (state = initialState, action: UserActionTypes): UserState => {
   switch (action.type) {
-    case FETCH_CEP_REQUEST:
+    case FETCH_USER_REQUEST:
       return { ...state, loading: true, error: null };
-    case FETCH_CEP_SUCCESS:
+    case FETCH_USER_SUCCESS:
       return { ...state, loading: false, data: action.payload, error: null };
-    case FETCH_CEP_FAILURE:
+    case FETCH_USER_FAILURE:
       return { ...state, loading: false, error: action.payload };
     default:
       return state;
@@ -30,4 +31,4 @@ const cepReducer = (state = initialState, action: CepActionTypes): CepState => {
 };
 
 
-export default cepReducer;
+export default userReducer;

@@ -1,9 +1,13 @@
-import { SafeAreaView, ScrollViewComponent, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { SafeAreaView, ScrollView, ScrollViewComponent, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useEffect, useReducer, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCep } from "../store/Adress/thunks";
+import { InputText } from "./geral/input-text";
+import BtnPrimary from "./geral/btn-primary";
+import TextError from "./geral/text-error";
+import ModalComponent from "./geral/modal";
 
 export default function StoreAdress(props: { open: boolean, onClose: (isOpen: boolean) => void }) {
     const [cep, onChangeCep] = useState("");
@@ -15,28 +19,65 @@ export default function StoreAdress(props: { open: boolean, onClose: (isOpen: bo
     const [number, onChangeNumber] = useState("");
     const [openNewAdress, setOpenAdress] = useState<boolean>(false);
     const dispatch = useDispatch();
+    const adress = useSelector((state: any) => state.AdressReducer.data);
+    const [error, setErrors] = useState<any | null>({
+        erroCep: '',
+        errorStreet: '',
+        errorNeighborhood: '',
+        errorCity: '',
+        errorState: '',
+        errorComplement: '',
+    });
+
+    useEffect(() => {
+        if (adress) {
+            onChangeStreet(adress.logradouro);
+            onChangeNeighborhood(adress.bairro);
+            onChangeCity(adress.localidade);
+            onChangeState(adress.uf);
+            onChangeComplement(adress.complemento);
+        }
+    }, [adress])
+
 
     useEffect(() => {
         setOpenAdress(props.open);
     }, [props.open]);
-    
 
-    const handleGetCep = () => {
-        const response =  dispatch(fetchCep(cep));
-        console.log(response)
-      };
+
+    const handleGetCep = (cep) => {
+        onChangeCep(cep);
+        dispatch(fetchCep(cep))
+    };
+
+    const submitValidated = () => {
+        const newErrors = {
+            erroCep: cep === "" ? "O Campo cep obrigatório" : "",
+            errorStreet: street === "" ? "O Campo Rua obrigatório" : "",
+            errorNeighborhood: neighborhood === "" ? "O Campo bairro obrigatório" : "",
+            errorCity: city === "" ? "O Campo cidade obrigatório" : "",
+            errorState: state === "" ? "O Campo Estado obrigatório" : "",
+            errorComplement: "",
+        };
+
+        setErrors(newErrors);
+
+        return !Object.values(newErrors).some(error => error !== "");
+    }
 
     async function handleSubmit() {
-        const data = {
-            cep,
-            street,
-            neighborhood,
-            city,
-            state,
-            complement,
-            number,
-        };
-        console.log(data);
+        if (submitValidated()) {
+            const data = {
+                cep,
+                street,
+                neighborhood,
+                city,
+                state,
+                complement,
+                number,
+            };
+            console.log(data);
+        }
     }
 
     const handleCloseModal = () => {
@@ -44,70 +85,74 @@ export default function StoreAdress(props: { open: boolean, onClose: (isOpen: bo
     };
 
     return (
-        <View style={styles.adressContainer}>
-            <TouchableOpacity
-                onPress={handleCloseModal}
-                style={styles.cloneModal}
-            >
-                <Ionicons name="remove-outline" size={50} />
-            </TouchableOpacity>
-            <SafeAreaView style={{ marginBottom: 5 }}>
+        <ModalComponent handleCheckClose={handleCloseModal}>
+             <ScrollView  style={{ marginBottom: 5 }}>
                 <Text style={styles.titleAdress}>Adicione um novo endereço</Text>
-                <TextInput
-                    style={styles.input}
-                    onChangeText={handleGetCep}
+                {error.erroCep && <TextError error={error.erroCep} />}
+                <InputText
+                    setFn={handleGetCep}
                     placeholder="CEP"
+                    attribute={{ keyboardType: "numeric" }}
                     value={cep}
-                    keyboardType="numeric"
                 />
-                <TextInput
-                    style={styles.input}
+                {error.errorStreet && <TextError error={error.errorStreet} />}
+                <InputText
+                    setFn={onChangeStreet}
                     placeholder="Rua"
                     value={street}
-                    onChangeText={onChangeStreet}
                 />
-                <TextInput
+                {
+                    error.errorNeighborhood && <TextError error={error.errorNeighborhood} />
+                }
+                <InputText
+                    setFn={onChangeNeighborhood}
                     placeholder="Bairro"
-                    style={styles.input}
-                    onChangeText={onChangeNeighborhood}
+                    value={neighborhood}
                 />
-                <TextInput
+                {
+                    error.errorCity && <TextError error={error.errorCity} />
+                }
+                <InputText
+                    setFn={onChangeCity}
                     placeholder="Cidade"
-                    style={styles.input}
-                    onChangeText={onChangeCity}
+                    value={city}
                 />
-                <TextInput
+                {
+                    error.errorState && <TextError error={error.errorState} />
+                }
+                <InputText
+                    setFn={onChangeState}
                     placeholder="Estado"
-                    style={styles.input}
-                    onChangeText={onChangeState}
+                    value={state}
                 />
-                <TextInput
+                {
+                    error.errorComplement && <TextError error={error.errorComplement} />
+                }
+                <InputText
+                    setFn={onChangeComplement}
                     placeholder="Complemento"
-                    style={styles.input}
-                    onChangeText={onChangeComplement}
+                    value={complement}
                 />
-                <TextInput
+                <InputText
+                    setFn={onChangeNumber}
                     placeholder="Numero"
-                    style={styles.input}
-                    onChangeText={onChangeNumber}
                     value={number}
-                    keyboardType="numeric"
+                    attribute={{ keyboardType: "numeric" }}
                 />
-            </SafeAreaView>
+            </ScrollView >
 
-            <TouchableOpacity
-        onPress={handleSubmit}
-        style={[styles.button, { marginTop: 10 }]}
-      >
-        <Text style={styles.buttonText}>Entrar</Text>
-      </TouchableOpacity>
-        </View>
+            <BtnPrimary fn={handleSubmit} text="Salvar" />
+        </ModalComponent>
+        
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    scrollView: {
+        flexGrow: 1,
     },
 
     adressContainer: {
@@ -133,38 +178,5 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
     },
-    input: {
-        borderRadius: 20,
-        marginBottom: 10,
-        height: 55,
-        margin: 5,
-        paddingLeft: 20,
-        // borderWidth: 0.3,
-        fontFamily: 'sans-serif',
-        fontSize: 15,
-        padding: 15,
-        // borderColor: "#3B566E",
-        backgroundColor: "#FFFFFF",
-      },
-      buttonText: {
-        color: "#fff",
-        fontSize: 15,
-        fontWeight: "bold",
-      },
-      image: {
-        width: 200,
-        height: 200,
-        alignSelf: "center",
-      },
-      button: {
-        alignItems: "center",
-        backgroundColor: "#BC1C2C",
-        padding: 20,
-        borderRadius: 20,
-        marginTop: 10,
-        fontFamily: "Roboto",
-        fontWeight: "bold",
-        fontSize: 20,
-        color: "#fff",
-      },
+
 });

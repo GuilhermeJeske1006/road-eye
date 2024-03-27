@@ -9,9 +9,12 @@ import {
   View,
 } from "react-native";
 import ForgotScreen from "../Forgot";
+import BtnPrimary from "../../components/geral/btn-primary";
+import { InputText } from "../../components/geral/input-text";
+import TextError from "../../components/geral/text-error";
 
 
-export default function LoginScreen(props: {onAuth: (isAuth: boolean) => void }) {
+export default function LoginScreen(props: { onAuth: (isAuth: boolean) => void }) {
 
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
@@ -43,62 +46,46 @@ export default function LoginScreen(props: {onAuth: (isAuth: boolean) => void })
   };
 
   return (
-    <View  style={{ flex: 1, margin: 30, justifyContent: "center" }}>
+    <View style={{ flex: 1, margin: 30, justifyContent: "center" }}>
       {
-        openForgot ? 
-          <ForgotScreen  openForgot={openForgot}  onCloseForgot={onCloseForgot} email={email}/> :
+        openForgot ?
+          <ForgotScreen openForgot={openForgot} onCloseForgot={onCloseForgot} email={email} /> :
           <KeyboardAvoidingView behavior="padding">
-      
-          <Image
-            source={require('../../assets/logo.png')}
-            style={[styles.image, { marginBottom: 40 }]}
-          ></Image>
-          {
-            errors.emailRequired && <Text style={{ color: 'red' }}>{errors.emailRequired}</Text>
-          }
-          <TextInput
-            style={styles.input}
-            placeholder="Digite seu email"
-            keyboardType="email-address"
-            onChangeText={text => setEmail(text)}
-          />
-          {
-            errors.passwordRequired && <Text style={{ color: 'red' }}>{errors.passwordRequired}</Text>
-          }
-          <TextInput
-            style={styles.input}
-            placeholder="Digite sua senha"
-            secureTextEntry
-            onChangeText={text => setSenha(text)}
-          />
-              <TouchableOpacity 
+
+            <Image
+              source={require('../../assets/logo.png')}
+              style={[styles.image, { marginBottom: 40 }]}
+            ></Image>
+            {
+              errors.emailRequired && <TextError error={errors.emailRequired} />
+            }
+            <InputText
+              setFn={text => setEmail(text)}
+              placeholder="Digite seu email"
+              attribute={{ keyboardType: "email-address" }}
+            />
+            {
+              errors.passwordRequired && <TextError error={errors.passwordRequired} />
+            }
+            <InputText
+              setFn={text => setSenha(text)}
+              placeholder="Digite sua senha"
+              attribute={{ secureTextEntry: true }}
+            />
+            <TouchableOpacity
               onPress={() => setOpenForgot(true)}
             >
-            <Text style={[styles.buttonText, {marginLeft: 20, color: '#000'}]}>Esqueci minha senha?</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={submitLogin}
-            style={[styles.button, { marginTop: 30 }]}
-          >
-            <Text style={styles.buttonText}>Entrar</Text>
-          </TouchableOpacity>
-        </KeyboardAvoidingView>
+              <Text style={[styles.buttonText, { marginLeft: 20, color: '#000' }]}>Esqueci minha senha?</Text>
+            </TouchableOpacity>
+            <BtnPrimary fn={submitLogin} text="Entrar" />
+
+          </KeyboardAvoidingView>
       }
     </View>
   );
 }
 const styles = StyleSheet.create({
-  input: {
-    borderRadius: 20,
-    marginBottom: 10,
-    height: 55,
-    margin: 5,
-    paddingLeft: 20,
-    fontFamily: 'sans-serif',
-    fontSize: 15,
-    padding: 15,
-    backgroundColor: "#FFFFFF",
-  },
+
   buttonText: {
     color: "#fff",
     fontSize: 15,
@@ -109,16 +96,6 @@ const styles = StyleSheet.create({
     height: 200,
     alignSelf: "center",
   },
-  button: {
-    alignItems: "center",
-    backgroundColor: "#BC1C2C",
-    padding: 20,
-    borderRadius: 20,
-    marginTop: 10,
-    fontFamily: "Roboto",
-    fontWeight: "bold",
-    fontSize: 20,
-    color: "#fff",
-  },
+
 })
 
