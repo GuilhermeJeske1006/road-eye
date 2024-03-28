@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 
-const BASE_URL = 'https://viacep.com.br/ws/'; 
+const BASE_URL = 'https://viacep.com.br/ws/';
 
 const apiViaCep = axios.create({
   baseURL: BASE_URL,

@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import StoreAdress from "../../components/storeAdress";
 import ListAdress from "../../components/listAdress";
@@ -12,8 +12,14 @@ import {
   LocationAccuracy,
 } from "expo-location";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import MapViewDirections from "react-native-maps-directions";
 import CustomMarker from "../../components/customMarker";
+import CardMarker from "../../components/cardMarker";
+import ListSchool from "../../components/listSchool";
+import ListPeople from "../../components/listPeople";
+import CameraComponent from "../../components/camera";
+import BtnFloating from "../../components/geral/btn-floating";
 
 
 
@@ -22,18 +28,21 @@ export default function HomeScreen() {
   const mapRef = useRef<MapView>(null)
   const [location, setLocation] = useState<null | LocationObject>();
 
-  const isDriver = useState<boolean>(true);
+  const [isDriver] = useState<boolean>(true);
   const [isAuth, setIsAuth] = useState<boolean>(false);
-  const isUSer = useState<boolean>(true);
+  const [isUSer, setIsUSer] = useState<boolean>(false);
   const [openNewAdress, setOpenAdress] = useState<boolean>(false);
   const [openListAdress, setListAdress] = useState<boolean>(false);
   const [openCheck, setOpenCheck] = useState<boolean>(false);
   const [openCardMarker, setOpenCardMarker] = useState<boolean>(false);
+  const [openListSchool, setListSchool] = useState<boolean>(false);
+  const [openListPeople, setListPeople] = useState<boolean>(false);
   const GOOGLE_MAPS_APIKEY = 'AIzaSyBaMRuorLtC5E6MZWFYKcdvkGxJAxZmQ18';
   const [destinationLocation, setDestinationLocation] = useState(null);
   const [originLocation, setOriginLocation] = useState(null);
   const origin = { latitude: 37.3318456, longitude: -122.0296002 };
   const destination = { latitude: 37.771707, longitude: -122.4053769 };
+
 
   async function requestLocationPermission() {
     const granted = requestForegroundPermissionsAsync();
@@ -43,6 +52,7 @@ export default function HomeScreen() {
       setLocation(currentPosition);
     }
   }
+
 
   useEffect(() => {
     requestLocationPermission();
@@ -72,6 +82,12 @@ export default function HomeScreen() {
 
   const handleCheckClose = (isOpen) => {
     setOpenCheck(isOpen);
+  }
+  const handleSchoolClose = (isOpen) => {
+    setListSchool(isOpen);
+  }
+  const handlePeopleClose = (isOpen) => {
+    setListPeople(isOpen);
   }
 
 
@@ -114,6 +130,7 @@ export default function HomeScreen() {
           toolbarEnabled={false}
           style={styles.map}
         >
+
           <CustomMarker
             latitude={-23.5544}
             longitude={-46.6296}
@@ -122,6 +139,7 @@ export default function HomeScreen() {
             onPress={getDirections}
           >
           </CustomMarker>
+
           <CustomMarker
             latitude={-23.5583}
             longitude={-46.6282}
@@ -129,7 +147,9 @@ export default function HomeScreen() {
             id={'2'}
             onPress={getDirections}
           >
+            
           </CustomMarker>
+
           {destinationLocation ?
             <MapViewDirections
               origin={
@@ -170,74 +190,21 @@ export default function HomeScreen() {
           </Marker>
         </MapView>
       )}
-      {isUSer && (
-        <TouchableOpacity
-          onPress={() => setListAdress(true)}
-          style={styles.buttonOpenList}
-        >
-          <Icon
-            name="format-list-bulleted"
-            style={styles.iconMap}
-            size={30}
-            margin={20}
-          />
-        </TouchableOpacity>
-      )}
-      {isUSer && (
-        <TouchableOpacity
-          onPress={() => setOpenCheck(true)}
-          style={styles.buttonOpenCheck}
-        >
-          <Icon
-            name="format-list-checks"
-            style={styles.iconMap}
-            size={30}
-            margin={20}
-          />
-        </TouchableOpacity>
-      )}
-
-      {
-        openCardMarker && (
-          <View style={styles.card} >
-            <TouchableOpacity onPress={() => { setOpenCardMarker(false) }} style={{ alignItems: 'flex-end' }} >
-              <Icon name="close" size={20} color="#000" />
-            </TouchableOpacity>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Image
-                source={{ uri: 'https://picsum.photos/id/237/200/300' }}
-                style={{ width: 100, height: 100, borderRadius: 100, }}
-              ></Image>
-
-              <Text style={[styles.title, { textAlign: 'center', alignItems: 'center', justifyContent: 'center', marginLeft: 10 }]}>12C2-ABC</Text>
-
-            </View>
-
-            <Text style={styles.title}>Motorista José Maria</Text>
-            <Text style={styles.content}>Para SENAI</Text>
-
-            <TouchableOpacity
-              style={[styles.button, {
-                marginTop: 20, flexDirection: 'row',
-                alignItems: 'center',
-              }]}
-            >
-              <Icon name="phone" size={20} color="#fff" />
-              <Text style={styles.buttonText}>
-                Ligar</Text>
-            </TouchableOpacity>
-
-          </View>
-
-        )
-      }
-
       <TouchableOpacity
         style={styles.buttonSpeed}
       >
         <Text style={styles.textSpeed}>{location?.coords.speed.toFixed()} km/h</Text>
       </TouchableOpacity>
 
+      {isUSer && (<BtnFloating icon="format-list-bulleted" fn={() => setListAdress(true)} right={5} bottom={110} />)}
+      {isUSer && (<BtnFloating icon="format-list-checks" fn={() => setOpenCheck(true)} right={5} bottom={210} />)}
+      {isDriver && (<BtnFloating icon="school" fn={() => setListSchool(true)} right={5} bottom={200} />)}
+      {isDriver && (<BtnFloating icon="people" fn={() => setListPeople(true)} right={5} bottom={110} Ionicons={true} />)}
+      {isDriver && (<BtnFloating icon="camera" fn={() => setListAdress(true)} right={5} bottom={290} />)}
+      {/* <CameraComponent /> */}
+      {openListPeople && <ListPeople onClosePeople={handlePeopleClose} setLocal={setLocalDestination} />}
+      {openListSchool && <ListSchool onCloseSchool={handleSchoolClose} setLocal={setLocalDestination} />}
+      {openCardMarker && <CardMarker openCardMarker={openCardMarker} setOpenCardMarker={setOpenCardMarker} />}
       {openListAdress && <ListAdress open={openListAdress} onCloseList={handleListClose} setLocal={setLocalOrigin} />}
       {openCheck && <CheckUser onCloseCheck={handleCheckClose} setLocal={setLocalDestination} />}
     </View>
@@ -269,6 +236,21 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 50,
   },
+  buttonOpenCamera: {
+    position: "absolute",
+    bottom: 290,
+    right: 5,
+    backgroundColor: "white",
+    borderRadius: 50,
+  },
+
+  buttonOpenCheck: {
+    position: "absolute",
+    bottom: 200,
+    right: 5,
+    backgroundColor: "white",
+    borderRadius: 50,
+  },
 
   input: {
     borderRadius: 10,
@@ -290,31 +272,8 @@ const styles = StyleSheet.create({
   iconMap: {
     color: "#EDB047",
   },
-  buttonOpenCheck: {
-    position: "absolute",
-    bottom: 200,
-    right: 5,
-    backgroundColor: "white",
-    borderRadius: 50,
-  },
 
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 30,
-    padding: 30,
-    shadowColor: '#000',
-    width: '80%',
-    position: 'absolute',
-    bottom: 20,
-    zIndex: 100,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
+
   title: {
     fontSize: 20,
     fontWeight: 'bold',

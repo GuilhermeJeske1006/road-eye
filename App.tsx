@@ -10,9 +10,10 @@ import ProfileScreen from "./src/screen/Profile";
 import LoginScreen from "./src/screen/Login";
 import { Provider } from "react-redux";
 import store from "./src/store/store";
-import { useSelector } from "react-redux";
+import 'react-native-reanimated';
 
 const Drawer = createDrawerNavigator();
+
 
 const MyTheme = {
   dark: true,
@@ -45,7 +46,7 @@ export default function App() {
       {isAuth ? (
         <NavigationContainer theme={MyTheme}>
           <Drawer.Navigator initialRouteName="Home">
-            <Drawer.Screen name="Home" component={HomeScreen}  />
+            <Drawer.Screen name="Home" component={HomeScreen} />
             <Drawer.Screen name="Perfil" component={ProfileScreen}  />
           </Drawer.Navigator>
         </NavigationContainer>
