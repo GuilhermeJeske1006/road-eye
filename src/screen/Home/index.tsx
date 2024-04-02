@@ -15,11 +15,13 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MapViewDirections from "react-native-maps-directions";
 import CustomMarker from "../../components/customMarker";
-import CardMarker from "../../components/cardMarker";
 import ListSchool from "../../components/listSchool";
 import ListPeople from "../../components/listPeople";
 import CameraComponent from "../../components/camera";
 import BtnFloating from "../../components/geral/btn-floating";
+import CardDriver from "../../components/cardDriver";
+import CardModal from "../../components/geral/card-modal";
+import CardUser from "../../components/cardUser";
 
 
 
@@ -34,14 +36,20 @@ export default function HomeScreen() {
   const [openNewAdress, setOpenAdress] = useState<boolean>(false);
   const [openListAdress, setListAdress] = useState<boolean>(false);
   const [openCheck, setOpenCheck] = useState<boolean>(false);
-  const [openCardMarker, setOpenCardMarker] = useState<boolean>(false);
+  const [openCardDriver, setOpenCardDriver] = useState<boolean>(false);
   const [openListSchool, setListSchool] = useState<boolean>(false);
   const [openListPeople, setListPeople] = useState<boolean>(false);
   const GOOGLE_MAPS_APIKEY = 'AIzaSyBaMRuorLtC5E6MZWFYKcdvkGxJAxZmQ18';
   const [destinationLocation, setDestinationLocation] = useState(null);
   const [originLocation, setOriginLocation] = useState(null);
+  const [openCardUser, setOpenCardUser] = useState<boolean>(false);
   const origin = { latitude: 37.3318456, longitude: -122.0296002 };
   const destination = { latitude: 37.771707, longitude: -122.4053769 };
+
+  const locations = [
+    { latitude: 37.3318456, longitude: -122.0296002 },
+    
+  ]
 
 
   async function requestLocationPermission() {
@@ -89,7 +97,9 @@ export default function HomeScreen() {
   const handlePeopleClose = (isOpen) => {
     setListPeople(isOpen);
   }
-
+  const handleCardClose = (isOpen) => {
+    setOpenCardUser(isOpen);
+  }
 
   const getDirections = (latitude, longitude) => {
     setDestinationLocation({
@@ -136,19 +146,9 @@ export default function HomeScreen() {
             longitude={-46.6296}
             color={"#0F9D58"}
             id={'1'}
-            onPress={getDirections}
-          >
-          </CustomMarker>
+            onPress={() => setOpenCardUser(true)}
+          />
 
-          <CustomMarker
-            latitude={-23.5583}
-            longitude={-46.6282}
-            color={"#EDB047"}
-            id={'2'}
-            onPress={getDirections}
-          >
-            
-          </CustomMarker>
 
           {destinationLocation ?
             <MapViewDirections
@@ -174,26 +174,22 @@ export default function HomeScreen() {
             :
             null
           }
-          <Marker
-            coordinate={{
-              latitude: location.coords.latitude,
-              longitude: location.coords.longitude,
-            }}
-            onPress={() => { setOpenCardMarker(true) }}
-          >
-            <Icon
-              name="map-marker"
-              color="#BC1C2C"
-              size={50}
+          <CustomMarker
+            latitude={location.coords.latitude}
+            longitude={location.coords.longitude}
+            color={"#BC1C2C"}
+            id={'50'}
+            onPress={() => { setOpenCardDriver(true) }}
             />
 
-          </Marker>
         </MapView>
       )}
       <TouchableOpacity
         style={styles.buttonSpeed}
       >
-        <Text style={styles.textSpeed}>{location?.coords.speed.toFixed()} km/h</Text>
+        <Text style={styles.textSpeed}>
+          {location?.coords.speed.toFixed()} KM/H
+          </Text>
       </TouchableOpacity>
 
       {isUSer && (<BtnFloating icon="format-list-bulleted" fn={() => setListAdress(true)} right={5} bottom={110} />)}
@@ -202,9 +198,10 @@ export default function HomeScreen() {
       {isDriver && (<BtnFloating icon="people" fn={() => setListPeople(true)} right={5} bottom={110} Ionicons={true} />)}
       {isDriver && (<BtnFloating icon="camera" fn={() => setListAdress(true)} right={5} bottom={290} />)}
       {/* <CameraComponent /> */}
+      {openCardUser && <CardUser openCardUser={openCardUser} setOpenCardUser={setOpenCardUser}  />}
       {openListPeople && <ListPeople onClosePeople={handlePeopleClose} setLocal={setLocalDestination} />}
       {openListSchool && <ListSchool onCloseSchool={handleSchoolClose} setLocal={setLocalDestination} />}
-      {openCardMarker && <CardMarker openCardMarker={openCardMarker} setOpenCardMarker={setOpenCardMarker} />}
+      {openCardDriver && <CardDriver openCardDriver={openCardDriver} setOpenCardDriver={setOpenCardDriver} />}
       {openListAdress && <ListAdress open={openListAdress} onCloseList={handleListClose} setLocal={setLocalOrigin} />}
       {openCheck && <CheckUser onCloseCheck={handleCheckClose} setLocal={setLocalDestination} />}
     </View>
@@ -290,15 +287,15 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 50,
   },
+
   textSpeed: {
     fontSize: 20,
     fontWeight: 'bold',
     padding: 20,
-    borderRadius: 100,
     backgroundColor: "#EDB047",
     color: "#fff",
-    borderWidth: 2,
     borderColor: "#EDB047",
+    borderRadius: 50,
   },
 
   buttonText: {

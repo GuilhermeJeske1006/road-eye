@@ -1,12 +1,14 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, Text } from 'react-native';
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 export default function BtnPrimary(props: {
   fn: () => void;
   text: string;
+  icon?: string;
 }) {
   return (
-    <TouchableOpacity onPress={props.fn} style={[styles.button, { marginTop: 30 }]}>
+    <TouchableOpacity onPress={props.fn} style={[styles.button, { marginTop: 30, }]}>
       <Text style={styles.buttonText}>{props.text}</Text>
     </TouchableOpacity>
   );

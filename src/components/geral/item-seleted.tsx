@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity, Text, Image } from "react-native";
+import { StyleSheet, TouchableOpacity, Text, Image, View } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 export default function ItemSelected(props: {
@@ -33,12 +33,15 @@ export default function ItemSelected(props: {
       
       <Text style={styles.itemText}>{props.item.label}</Text>
 
-      <Icon
+     <View style={{  }}>
+     <Icon
         name={props.IconCamera}
-        style={[styles.iconMap, { color: "#000", flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-end', marginLeft: 20}]}
+        style={[styles.iconMap, { color: "#000", marginLeft: 20}]}
         size={25}
         margin={20}
       />
+      </View>
+      
     </TouchableOpacity>
   );
 }
