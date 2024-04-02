@@ -12,6 +12,8 @@ import ForgotScreen from "../Forgot";
 import BtnPrimary from "../../components/geral/btn-primary";
 import { InputText } from "../../components/geral/input-text";
 import TextError from "../../components/geral/text-error";
+import { useDispatch } from "react-redux";
+import { postLogin } from "../../store/User/thunks";
 
 
 export default function LoginScreen(props: { onAuth: (isAuth: boolean) => void }) {
@@ -22,6 +24,7 @@ export default function LoginScreen(props: { onAuth: (isAuth: boolean) => void }
     emailRequired: "",
     passwordRequired: "",
   } as any);
+  const dispatch = useDispatch();
 
   const [openForgot, setOpenForgot] = useState<boolean>(false);
 
@@ -34,10 +37,20 @@ export default function LoginScreen(props: { onAuth: (isAuth: boolean) => void }
     return !newErrors.emailRequired && !newErrors.passwordRequired;
   };
 
-  const submitLogin = () => {
+  const submitLogin = async () => {
     if (validateLogin()) {
-      console.log(email, senha);
-      props.onAuth(true);
+      const data = {
+        login: email,
+        password: senha,
+      };
+  
+      try {
+        const res = await dispatch(postLogin(data));
+        console.log('res', res);
+        props.onAuth(true);
+      } catch (err) {
+        console.log('Erro ao fazer login:', err);
+      }
     }
   };
 

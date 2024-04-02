@@ -5,13 +5,17 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import StoreAdress from "./storeAdress";
 import ItemSelected from "./geral/item-seleted";
 import ModalComponent from "./geral/modal";
+import { useDispatch } from "react-redux";
+import { getAddress } from "../store/Adress/thunks";
+import { useSelector } from "react-redux";
 
 
 export default function ListAdress(props: { open: boolean, onCloseList: (isOpenList: boolean) => void, setLocal: (local: object) => void }) {
   const [openNewAdress, setOpenAdress] = useState<boolean>(false);
   const [openListAdress, setListAdress] = useState<boolean>(false);
   const [selectedItemGo, setSelectedItemGo] = useState(null);
-
+  const address = useSelector((state: any) => state.AdressReducer.data);
+  const dispatch = useDispatch();
 
   const setSelectedItem = (item) => {
     props.setLocal(item);
@@ -34,59 +38,22 @@ export default function ListAdress(props: { open: boolean, onCloseList: (isOpenL
     setOpenAdress(isOpen);
   };
 
-  const data = [
-    {
-      key: "1",
-      adress: "Rua 1",
-      number: 1,
-      cep: 123456,
-      city: "São Paulo",
-      state: "SP",
-      complement: "Casa",
-    },
-    {
-      key: "2",
-      adress: "Rua 1",
-      number: 1,
-      cep: 123456,
-      city: "São Paulo",
-      state: "SP",
-      complement: "Casa",
-    },
-    {
-      key: "3",
-      adress: "Rua 1",
-      number: 1,
-      cep: 123456,
-      city: "São Paulo",
-      state: "SP",
-      complement: "Casa",
-    },
-    {
-      key: "4",
-      adress: "Rua 1",
-      number: 1,
-      cep: 123456,
-      city: "São Paulo",
-      state: "SP",
-      complement: "Casa",
-    },
-    {
-      key: "5",
-      adress: "Rua 1",
-      number: 1,
-      cep: 123456,
-      city: "São Paulo",
-      state: "SP",
-      complement: "Casa",
-    },
-  ];
+  useEffect(() => {
+    getApiAddress();
+  
+  }, [])
+
+
+  const getApiAddress = () => {
+      dispatch(getAddress());
+  }
+
 
   const renderItem = ({ item }) => (
     <ItemSelected
       item={{
         key: item.key,
-        label: `${item.city}, ${item.state}, ${item.cep}`
+        label: `${item.city}, ${item.state}, ${item.postCode}`
       }}
       selectedItemGo={selectedItemGo}
       setSelectedItem={setSelectedItem}
@@ -111,7 +78,7 @@ export default function ListAdress(props: { open: boolean, onCloseList: (isOpenL
         icon2={'map-marker-circle'}
       />
       <FlatList
-        data={data}
+        data={address}
         renderItem={renderItem}
         keyExtractor={(item) => item.key}
       />

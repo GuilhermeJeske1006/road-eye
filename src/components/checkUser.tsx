@@ -1,13 +1,19 @@
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ItemSelected from "./geral/item-seleted";
 import BtnPrimary from "./geral/btn-primary";
 import ModalComponent from "./geral/modal";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { getSchool } from "../store/school/thunks";
 
 export default function CheckUser(props: { onCloseCheck: (isOpenCheck: boolean) => void, setLocal: (local: object) => void }) {
   const [openCheck, setOpenCheck] = useState<boolean>(false);
+  const schools = useSelector((state: any) => state.SchoolReducer.data);
+
+  const dispatch = useDispatch();
 
   const handleCheckClose = () => {
     props.onCloseCheck(false);
@@ -23,6 +29,11 @@ export default function CheckUser(props: { onCloseCheck: (isOpenCheck: boolean) 
     props.setLocal(selectedItemSchool);
     handleCheckClose();
   }
+
+  useEffect(() => {
+    dispatch(getSchool())
+  
+  })
 
 
   const [selectedItemGo, setSelectedItemGo] = useState(null);
@@ -49,11 +60,6 @@ export default function CheckUser(props: { onCloseCheck: (isOpenCheck: boolean) 
     />
   );
 
-  const dataSchool = [
-    { key: "Escola S" },
-    { key: "SENAI" },
-    { key: "E.B.M Anna othilia" },
-  ]
 
   const renderItemSchool = ({ item }) => (
     <ItemSelected
@@ -75,9 +81,9 @@ export default function CheckUser(props: { onCloseCheck: (isOpenCheck: boolean) 
       <Text style={styles.titleAdress}>Selecione a sua escola</Text>
 
       <FlatList
-        data={dataSchool}
+        data={schools}
         renderItem={renderItemSchool}
-        keyExtractor={(item) => item.key}
+        keyExtractor={(item) => item.name}
       />
 
       <Text style={[styles.titleAdress, { marginTop: 10 }]}>Você vai?</Text>

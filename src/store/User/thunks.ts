@@ -3,15 +3,19 @@
 import { Dispatch } from 'redux';
 import { UserActionTypes, fetchUserFailure, fetchUserRequest, fetchUserSuccess } from './actions';
 import api from '../../services/api';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const postLogin = (data: object): any => async (dispatch: Dispatch<UserActionTypes>) => {
   dispatch(fetchUserRequest());
   try {
     const response = await api.post('/login', data);
     dispatch(fetchUserSuccess(response.data));
+    await AsyncStorage.setItem('auth_token', response.data.accessToken);
+
+    return response.data;
   } catch (error) {
     dispatch(fetchUserFailure('Erro ao buscar o CEP.'));
+    throw error;
   }
 };
 

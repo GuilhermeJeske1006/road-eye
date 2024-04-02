@@ -30,9 +30,9 @@ export default function HomeScreen() {
   const mapRef = useRef<MapView>(null)
   const [location, setLocation] = useState<null | LocationObject>();
 
-  const [isDriver] = useState<boolean>(true);
+  const [isDriver] = useState<boolean>(false);
   const [isAuth, setIsAuth] = useState<boolean>(false);
-  const [isUSer, setIsUSer] = useState<boolean>(false);
+  const [isUSer, setIsUSer] = useState<boolean>(true);
   const [openNewAdress, setOpenAdress] = useState<boolean>(false);
   const [openListAdress, setListAdress] = useState<boolean>(false);
   const [openCheck, setOpenCheck] = useState<boolean>(false);
@@ -209,77 +209,10 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   map: {
     width: "100%",
     height: "100%",
   },
-  adressContainer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: "white",
-    padding: 20,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-  },
-  buttonOpenList: {
-    position: "absolute",
-    bottom: 110,
-    right: 5,
-    backgroundColor: "white",
-    borderRadius: 50,
-  },
-  buttonOpenCamera: {
-    position: "absolute",
-    bottom: 290,
-    right: 5,
-    backgroundColor: "white",
-    borderRadius: 50,
-  },
-
-  buttonOpenCheck: {
-    position: "absolute",
-    bottom: 200,
-    right: 5,
-    backgroundColor: "white",
-    borderRadius: 50,
-  },
-
-  input: {
-    borderRadius: 10,
-    marginBottom: 10,
-    height: 50,
-    margin: 5,
-    borderWidth: 1,
-    fontFamily: "Roboto",
-    fontSize: 15,
-    color: "#44433F",
-    padding: 10,
-    borderColor: "#3B566E",
-  },
-  item: {
-    padding: 16,
-    borderTopColor: "#EDB047",
-    fontSize: 18,
-  },
-  iconMap: {
-    color: "#EDB047",
-  },
-
-
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 2,
-  },
-  content: {
-    fontSize: 16,
-  },
-
   buttonSpeed: {
     position: "absolute",
     bottom: 20,
@@ -287,7 +220,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 50,
   },
-
   textSpeed: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -296,33 +228,5 @@ const styles = StyleSheet.create({
     color: "#fff",
     borderColor: "#EDB047",
     borderRadius: 50,
-  },
-
-  buttonText: {
-    color: "#fff",
-    fontSize: 15,
-    fontWeight: "400",
-    marginLeft: 10,
-    alignItems: 'center',
-    textAlign: 'center',
-
-  },
-  image: {
-    width: 300,
-    height: 300,
-    alignSelf: "center",
-  },
-  button: {
-    alignItems: "center",
-    textAlign: 'center',
-    backgroundColor: "#BC1C2C",
-    padding: 10,
-    borderRadius: 20,
-    marginTop: 10,
-    fontFamily: "Roboto",
-    fontWeight: "bold",
-    fontSize: 20,
-    color: "#fff",
-
   },
 })
