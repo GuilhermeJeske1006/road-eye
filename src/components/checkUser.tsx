@@ -31,9 +31,13 @@ export default function CheckUser(props: { onCloseCheck: (isOpenCheck: boolean) 
   }
 
   useEffect(() => {
+    schools
+  }, [schools])
+
+  useEffect(() => {
     dispatch(getSchool())
   
-  })
+  }, [])
 
 
   const [selectedItemGo, setSelectedItemGo] = useState(null);
@@ -64,8 +68,8 @@ export default function CheckUser(props: { onCloseCheck: (isOpenCheck: boolean) 
   const renderItemSchool = ({ item }) => (
     <ItemSelected
       item={{
-        key: item.key,
-        label: item.key
+        key: item.id,
+        label: item.name
 
       }}
       selectedItemGo={selectedItemSchool}

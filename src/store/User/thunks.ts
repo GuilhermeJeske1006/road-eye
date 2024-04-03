@@ -30,30 +30,11 @@ export const postForgot = (data: object): any => async (dispatch: Dispatch<UserA
   }
 }
 
-export const postRegister = (data: object): any => async (dispatch: Dispatch<UserActionTypes>) => {
-  dispatch(fetchUserRequest());
-  try {
-    const response = await api.post('/register', data);
-    dispatch(fetchUserSuccess(response.data));
-  } catch (error) {
-    dispatch(fetchUserFailure('Erro ao buscar o CEP.'));
-  }
-}
 
-export const postLogout = (): any => async (dispatch: Dispatch<UserActionTypes>) => {
+export const postUpdate = (data: object, id: any): any => async (dispatch: Dispatch<UserActionTypes>) => {
   dispatch(fetchUserRequest());
   try {
-    const response = await api.post('/logout');
-    dispatch(fetchUserSuccess(response.data));
-  } catch (error) {
-    dispatch(fetchUserFailure('Erro ao buscar o CEP.'));
-  }
-}
-
-export const postUpdate = (data: object): any => async (dispatch: Dispatch<UserActionTypes>) => {
-  dispatch(fetchUserRequest());
-  try {
-    const response = await api.put('/update', data);
+    const response = await api.put(`/users/{${id}}`, data);
     dispatch(fetchUserSuccess(response.data));
   } catch (error) {
     dispatch(fetchUserFailure('Erro ao buscar o CEP.'));
@@ -73,8 +54,9 @@ export const putPassword = (data: object): any => async (dispatch: Dispatch<User
 export const showUser = (id: any): any => async (dispatch: Dispatch<UserActionTypes>) => {
   dispatch(fetchUserRequest());
   try {
-    const response = await api.get(`/user/${id}`);
+    const response = await api.get(`/users/${id}`);
     dispatch(fetchUserSuccess(response.data));
+    return response.data;
   } catch (error) {
     dispatch(fetchUserFailure('Erro ao buscar o CEP.'));
   }

@@ -1,4 +1,4 @@
-import { Component, useCallback, useState } from "react";
+import { Component, useCallback, useEffect, useState } from "react";
 import {
     StyleSheet,
     Text,
@@ -14,6 +14,9 @@ import {
 import { InputText } from "../../components/geral/input-text";
 import BtnPrimary from "../../components/geral/btn-primary";
 import TextError from "../../components/geral/text-error";
+import { useDispatch } from "react-redux";
+import { postUpdate, showUser } from "../../store/User/thunks";
+import { useSelector } from "react-redux";
 
 export default function ProfileScreen(props: { onAuth: (isAuth: boolean) => void }) {
     const [email, setEmail] = useState('');
@@ -38,6 +41,22 @@ export default function ProfileScreen(props: { onAuth: (isAuth: boolean) => void
         isEmail: '',
 
     });
+    const user = useSelector((state: any) => state.UserReducer.data);
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if(user) {
+            setEmail(user.email)
+            setPhone(user.phone)
+            setCpf(user.cpf)
+            setName(user.name)
+        }
+    }, [user])
+
+    useEffect(() => {
+        dispatch(showUser('5e882b78-fe1e-4790-a4ed-b0ecda4c0edd'))
+    }, [])
 
     const formatCpf = (text) => {
         // Remove qualquer caracter que não seja número
@@ -119,7 +138,22 @@ export default function ProfileScreen(props: { onAuth: (isAuth: boolean) => void
     function submit() {
 
         if (validateSubmit()) {
-            console.log(email, senha, phone, cpf, password, confirmPassword, name);
+            try {
+                const data = {
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    cpf: cpf
+                }
+                const res = dispatch(postUpdate(data, user.id));
+
+                if (res) {
+                    console.log('Dados atualizados com sucesso!');
+                }
+
+            } catch (error) {
+                console.log(error);
+            }
         }
 
     }
