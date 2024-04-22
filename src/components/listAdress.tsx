@@ -52,7 +52,7 @@ export default function ListAdress(props: { open: boolean, onCloseList: (isOpenL
   const renderItem = ({ item }) => (
     <ItemSelected
       item={{
-        key: item.key,
+        key: item.id,
         label: `${item.city}, ${item.state}, ${item.postCode}`
       }}
       selectedItemGo={selectedItemGo}

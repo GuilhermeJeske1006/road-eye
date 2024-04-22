@@ -15,3 +15,4 @@ export const getSchool = (): any => async (dispatch: Dispatch<SchoolActionTypes>
     throw error;
   }
 };
+

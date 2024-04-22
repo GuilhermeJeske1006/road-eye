@@ -1,7 +1,7 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const BASE_URL = 'http://18.230.126.212:8080/roadeye/';
+const BASE_URL = 'http://3.227.0.92:8080/roadeye/';
 
 const api = axios.create({
   baseURL: BASE_URL,

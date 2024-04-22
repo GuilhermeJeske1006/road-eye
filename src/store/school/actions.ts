@@ -1,4 +1,4 @@
-import { Schools } from "../../Interfaces/school";
+import { School } from "../../Interfaces/school";
 
 
 export const FETCH_SCHOOL_REQUEST = 'FETCH_SCHOOL_REQUEST';
@@ -11,7 +11,7 @@ interface FetchSchoolRequestAction {
 
 interface FetchSchoolSuccessAction {
   type: typeof FETCH_SCHOOL_SUCCESS;
-  payload: Schools;
+  payload: School;
 }
 
 interface FetchSchoolFailureAction {
@@ -25,7 +25,7 @@ export const fetchSchoolRequest = (): FetchSchoolRequestAction => ({
   type: FETCH_SCHOOL_REQUEST,
 });
 
-export const fetchSchoolSuccess = (data: Schools): FetchSchoolSuccessAction => ({
+export const fetchSchoolSuccess = (data: School): FetchSchoolSuccessAction => ({
   type: FETCH_SCHOOL_SUCCESS,
   payload: data,
 });

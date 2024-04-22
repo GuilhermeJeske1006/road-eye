@@ -13,6 +13,7 @@ export default function CheckUser(props: { onCloseCheck: (isOpenCheck: boolean) 
   const [openCheck, setOpenCheck] = useState<boolean>(false);
   const schools = useSelector((state: any) => state.SchoolReducer.data);
 
+  console.log(schools)
   const dispatch = useDispatch();
 
   const handleCheckClose = () => {
