@@ -141,21 +141,15 @@ export default function ProfileScreen(props: { onAuth: (isAuth: boolean) => void
     }
 
     const submit = async () => {
-
         if (validateSubmit()) {
             try {
                 const data = {
                     name: name,
                     email: email,
                     phone: phone,
-                    cpf: cpf
+                    cpf: cpf,
                 }
-                const userId = await AsyncStorage.getItem('user_id');
-                const res = dispatch(postUpdate(data, userId));
-
-                if (res) {
-                    console.log('Dados atualizados com sucesso!');
-                }
+                const res = dispatch(postUpdate(data));
 
             } catch (error) {
                 console.log(error);

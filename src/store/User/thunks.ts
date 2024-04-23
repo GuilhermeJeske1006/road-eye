@@ -32,10 +32,11 @@ export const postForgot = (data: object): any => async (dispatch: Dispatch<UserA
 }
 
 
-export const postUpdate = (data: object, id: any): any => async (dispatch: Dispatch<UserActionTypes>) => {
+export const postUpdate = (data: object): any => async (dispatch: Dispatch<UserActionTypes>) => {
   dispatch(fetchUserRequest());
   try {
-    const response = await api.put(`/users/{${id}}`, data);
+    const user_id = await AsyncStorage.getItem('user_id');
+    const response = await api.put(`/users/${user_id}`, data);
     dispatch(fetchUserSuccess(response.data));
     return response.data;
   } catch (error) {
@@ -46,12 +47,12 @@ export const postUpdate = (data: object, id: any): any => async (dispatch: Dispa
 export const putPassword = (data: object): any => async (dispatch: Dispatch<UserActionTypes>) => {
   dispatch(fetchUserRequest());
   try {
-    const response = await api.put(`/users/password/${AsyncStorage.getItem('user_id')}`, data);
+    const user_id = await AsyncStorage.getItem('user_id');
+    const response = await api.put(`/users/password/${user_id}`, data);
     dispatch(fetchUserSuccess(response.data));
-    console.log(response.data);
+    return response.data;
   } catch (error) {
-    console.log(error);
-    dispatch(fetchUserFailure('Erro ao buscar o CEP.'));
+    dispatch(fetchUserFailure('Erro ao alterar senha.'));
   }
 }
 

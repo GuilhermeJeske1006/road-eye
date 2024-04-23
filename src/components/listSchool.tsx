@@ -16,7 +16,6 @@ export default function ListSchool(props: { onCloseSchool: (isOpenCheck: boolean
   const [selectedItemSchool, setSelectedItemSchool] = useState(null);
   const schools = useSelector((state: any) => state.SchoolReducer.data);
 
-  console.log(schools);
 
   const dispatch = useDispatch();
 
@@ -38,10 +37,6 @@ export default function ListSchool(props: { onCloseSchool: (isOpenCheck: boolean
   useEffect(() => {
     dispatch(getSchool())
   }, [])
-
-
-  
-
 
   const renderItemSchool = ({ item }) => (
     <ItemSelected

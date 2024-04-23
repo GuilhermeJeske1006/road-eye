@@ -50,10 +50,11 @@ export default function ListAdress(props: { open: boolean, onCloseList: (isOpenL
 
 
   const renderItem = ({ item }) => (
+    console.log(item.address),
     <ItemSelected
       item={{
-        key: item.id,
-        label: `${item.city}, ${item.state}, ${item.postCode}`
+        key: item.address.id,
+        label: `${item.address.city}, ${item.address.state}, ${item.address.postCode}`
       }}
       selectedItemGo={selectedItemGo}
       setSelectedItem={setSelectedItem}

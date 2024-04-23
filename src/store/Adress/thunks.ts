@@ -5,6 +5,7 @@ import { fetchCepRequest, fetchCepSuccess, fetchCepFailure, CepActionTypes } fro
 import { Adress } from '../../Interfaces/adress';
 import apiViaCep from '../../services/apiViaCep';
 import api from '../../services/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export const fetchCep = (cep: string): any => async (dispatch: Dispatch<CepActionTypes>) => {
@@ -21,7 +22,8 @@ export const fetchCep = (cep: string): any => async (dispatch: Dispatch<CepActio
 export const getAddress = (): any => async (dispatch: Dispatch<CepActionTypes>) => {
   dispatch(fetchCepRequest());
   try {
-    const response = await api.get('/address');
+    const user_id = await AsyncStorage.getItem('user_id');
+    const response = await api.get(`/address/users/${user_id}`);
     dispatch(fetchCepSuccess(response.data));
     return response.data;
   } catch (error) {
