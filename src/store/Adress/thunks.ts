@@ -32,4 +32,20 @@ export const getAddress = (): any => async (dispatch: Dispatch<CepActionTypes>) 
   }
 }
 
+export const postAddress = (address: Object): any => async (dispatch: Dispatch<CepActionTypes>) => {
+  dispatch(fetchCepRequest());
+  try {
+    const user_id = await AsyncStorage.getItem('user_id');
+    console.log(address, user_id);
+    const response = await api.post(`/address/user/${user_id}`, address);
+    dispatch(fetchCepSuccess(response.data));
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    dispatch(fetchCepFailure('Erro ao buscar o CEP.'));
+    throw error;
+  }
+}
+
 

@@ -3,7 +3,7 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useEffect, useReducer, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCep } from "../store/Adress/thunks";
+import { fetchCep, postAddress } from "../store/Adress/thunks";
 import { InputText } from "./geral/input-text";
 import BtnPrimary from "./geral/btn-primary";
 import TextError from "./geral/text-error";
@@ -68,15 +68,18 @@ export default function StoreAdress(props: { open: boolean, onClose: (isOpen: bo
     async function handleSubmit() {
         if (submitValidated()) {
             const data = {
-                cep,
-                street,
-                neighborhood,
-                city,
-                state,
-                complement,
-                number,
+                postCode: cep,
+                street: street,
+                neighborhood: neighborhood,
+                city: city,
+                state: state,
+                complement : complement,
+                number: number,
+                country: "Brasil",
+                statusEnum: "ACTIVATE"
+
             };
-            console.log(data);
+            await dispatch(postAddress(data));
         }
     }
 

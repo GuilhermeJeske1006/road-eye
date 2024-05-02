@@ -52,6 +52,7 @@ export default function ListAdress(props: { open: boolean, onCloseList: (isOpenL
   const renderItem = ({ item }) => (
     console.log(item.address),
     <ItemSelected
+      key={item.address.id}
       item={{
         key: item.address.id,
         label: `${item.address.city}, ${item.address.state}, ${item.address.postCode}`
