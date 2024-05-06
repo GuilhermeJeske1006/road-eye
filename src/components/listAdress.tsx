@@ -40,9 +40,7 @@ export default function ListAdress(props: { open: boolean, onCloseList: (isOpenL
 
   useEffect(() => {
     getApiAddress();
-  
   }, [])
-
 
   const getApiAddress = () => {
       dispatch(getAddress());

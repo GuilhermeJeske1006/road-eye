@@ -36,7 +36,6 @@ export const postAddress = (address: Object): any => async (dispatch: Dispatch<C
   dispatch(fetchCepRequest());
   try {
     const user_id = await AsyncStorage.getItem('user_id');
-    console.log(address, user_id);
     const response = await api.post(`/address/user/${user_id}`, address);
     dispatch(fetchCepSuccess(response.data));
     console.log(response.data);

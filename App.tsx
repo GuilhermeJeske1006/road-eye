@@ -15,6 +15,7 @@ import LoginScreen from "./src/screen/Login";
 import { Provider } from "react-redux";
 import store from "./src/store/store";
 import 'react-native-reanimated';
+import CameraComponent from "./src/components/camera";
 
 const Drawer = createDrawerNavigator();
 
@@ -56,6 +57,7 @@ export default function App() {
             <Drawer.Navigator initialRouteName="Home">
               <Drawer.Screen name="Home" component={HomeScreen} />
               <Drawer.Screen name="Perfil" component={ProfileScreen} />
+              <Drawer.Screen name="Camera" component={CameraComponent} />
             </Drawer.Navigator>
           </NavigationContainer>
         ) : (

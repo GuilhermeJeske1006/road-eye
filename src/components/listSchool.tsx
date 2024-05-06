@@ -15,10 +15,31 @@ export default function ListSchool(props: { onCloseSchool: (isOpenCheck: boolean
   const [selectedItemGo, setSelectedItemGo] = useState(null);
   const [selectedItemSchool, setSelectedItemSchool] = useState(null);
   const schools = useSelector((state: any) => state.SchoolReducer.data);
-
-
+  
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    getSchoolApi()
+  }, [])
+
+  const getSchoolApi = () => {
+    dispatch(getSchool());
+  }
+
+  const renderItemSchool = ({ item }) => (
+    <ItemSelected
+      item={{
+        key: item.id,
+        label: item.name
+      }}
+      selectedItemGo={selectedItemSchool}
+      setSelectedItem={setSelectedItemSchool}
+      icon="school"
+      icon2="school"
+    />
+  )
+
+  
   const handleCheckClose = () => {
     props.onCloseSchool(false);
     setOpenCheck(false);
@@ -33,25 +54,6 @@ export default function ListSchool(props: { onCloseSchool: (isOpenCheck: boolean
     props.setLocal(selectedItemSchool);
     handleCheckClose();
   }
-
-  useEffect(() => {
-    dispatch(getSchool())
-  }, [])
-
-  const renderItemSchool = ({ item }) => (
-    <ItemSelected
-      item={{
-        key: item.key,
-        label: item.key
-
-      }}
-      selectedItemGo={selectedItemSchool}
-      setSelectedItem={setSelectedItemSchool}
-      icon="school"
-      icon2="school"
-    />
-  )
-
 
   return (
     <ModalComponent handleCheckClose={handleCheckClose}>

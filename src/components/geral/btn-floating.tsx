@@ -9,6 +9,7 @@ export default function BtnFloating(props: {
     bottom?: number;
     right?: number;
     left?: number;
+    top?: number;
 
 }) {
     return (
@@ -18,6 +19,7 @@ export default function BtnFloating(props: {
                 bottom: props.bottom,
                 right: props.right,
                 left: props.left,
+                top: props.top,
             }]}
         >
             {

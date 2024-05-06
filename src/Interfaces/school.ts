@@ -1,5 +1,5 @@
 export interface School {
-    schoolId: number;
+    id: number;
     name: string;
     statusEnum: string;
 }
