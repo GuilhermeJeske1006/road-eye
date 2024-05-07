@@ -48,7 +48,6 @@ export default function ListAdress(props: { open: boolean, onCloseList: (isOpenL
 
 
   const renderItem = ({ item }) => (
-    console.log(item.address),
     <ItemSelected
       key={item.address.id}
       item={{
@@ -80,7 +79,7 @@ export default function ListAdress(props: { open: boolean, onCloseList: (isOpenL
       <FlatList
         data={address}
         renderItem={renderItem}
-        keyExtractor={(item) => item.key}
+        keyExtractor={(item) => item.id}
       />
       <ItemSelected
         item={{

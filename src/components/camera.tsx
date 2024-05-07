@@ -5,7 +5,11 @@ import BtnFloating from "./geral/btn-floating";
 import BtnPrimary from "./geral/btn-primary";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-export default function CameraComponent() {
+export default function CameraComponent(props: {
+  setOpenCamera: (openCamera: boolean) => void;
+  people?: any;
+
+}) {
   const [isFlash, setIsFlash] = useState<boolean>(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [type, setType] = useState(CameraType.front);
@@ -35,6 +39,8 @@ export default function CameraComponent() {
     }
   }
 
+  console.log(props.people);
+
   async function sendPicture() {
     if (capturedPhoto) {
       const data = new FormData();
@@ -62,15 +68,25 @@ export default function CameraComponent() {
       >
               
         <View style={{ flex: 1, backgroundColor: 'transparent', flexDirection: 'row' }}>
+         
+       
         <TouchableOpacity
-        // onPress={() => props.setOpenCamera(false)}
+        onPress={() => props.setOpenCamera(false)}
         style={{ alignItems: "flex-start", marginLeft: 10, marginTop: 10}}
       >
         <Icon name="close" size={25} color="#FFF" />
       </TouchableOpacity>
+
+      {
+            props.people && (
+              <TouchableOpacity  style={[styles.cardName, { marginTop: 30,  }]}>
+              <Text style={styles.buttonText}>Tirar foto de {props.people} </Text>
+              </TouchableOpacity>
+            )
+          }
           <BtnFloating icon="camera-flip-outline" fn={() => setType(
             type === CameraType.back ? CameraType.front : CameraType.back
-          )} right={5} top={70} />
+          )} right={5} top={150} />
           <TouchableOpacity onPress={takePicture} style={[styles.buttonCamera, { marginTop: 30, }]}>
             <Text style={styles.buttonText}>Tirar a foto</Text>
           </TouchableOpacity>
@@ -124,6 +140,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
+    zIndex: 999999,
   },
   buttonModal: {
     backgroundColor: '#121212',
@@ -146,6 +163,20 @@ const styles = StyleSheet.create({
     fontSize: 20,
     margin: 10,
     color: '#fff',
+  },
+  cardName: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#EDB047',
+    padding: 20,
+    borderRadius: 20,
+    fontSize: 20,
+    margin: 50,
+    position: 'absolute',
+    top: 20,
+    color: '#fff',
+    right: 0,
+    left: 0,
   },
 
   buttonCamera: {

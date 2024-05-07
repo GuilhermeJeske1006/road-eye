@@ -1,10 +1,11 @@
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useState } from "react";
 import ItemSelected from "./geral/item-seleted";
 import BtnPrimary from "./geral/btn-primary";
 import ModalComponent from "./geral/modal";
+import CameraComponent from "./camera";
 
 export default function ListPeople(props: { onClosePeople: (isOpenCheck: boolean) => void, setLocal: (local: object) => void }) {
   const [openCheck, setOpenCheck] = useState<boolean>(false);
@@ -27,6 +28,10 @@ export default function ListPeople(props: { onClosePeople: (isOpenCheck: boolean
 
   const [selectedItemGo, setSelectedItemGo] = useState(null);
   const [selectedItemSchool, setSelectedItemSchool] = useState(null);
+
+  const setCloseCamera = (closeCamera: boolean) => {
+    setSelectedItemSchool(null)
+  }
 
 
   const dataSchool = [
@@ -53,6 +58,7 @@ export default function ListPeople(props: { onClosePeople: (isOpenCheck: boolean
 
 
   return (
+    
     <ModalComponent handleCheckClose={handleCheckClose}>
       <Text style={styles.titleAdress}>Alunos da rota</Text>
 
@@ -63,6 +69,16 @@ export default function ListPeople(props: { onClosePeople: (isOpenCheck: boolean
       />
 
       <BtnPrimary fn={submit} text="Ir agora" />
+
+      {
+        selectedItemSchool && (
+          <Modal style={{ flex: 1}}>
+          <CameraComponent setOpenCamera={setCloseCamera} people={selectedItemSchool} />
+    
+          </Modal>
+        )
+      }
+
     </ModalComponent>
   );
 }

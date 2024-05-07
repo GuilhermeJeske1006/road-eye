@@ -123,8 +123,9 @@ export default function HomeScreen() {
   }
 
   return (
-    <View style={{ justifyContent: "center", alignItems: "center" }}>
-      {location && (
+    <View style={{  flex: 1 }}>
+
+      {location && !openCamera && (
         <MapView
           ref={mapRef}
           initialRegion={{
@@ -199,7 +200,7 @@ export default function HomeScreen() {
       {isDriver && (<BtnFloating icon="people" fn={() => setListPeople(true)} right={5} bottom={110} Ionicons={true} />)}
       {isDriver && (<BtnFloating icon="camera" fn={() => setOpenCamera(true)} right={5} bottom={290} />)}
     
-      {/* {openCamera && <CameraComponent  openCamera={openCamera} setOpenCamera={setOpenCamera}  />}       */}
+      {openCamera && <CameraComponent setOpenCamera={setOpenCamera} />}      
       {openCardUser && <CardUser openCardUser={openCardUser} setOpenCardUser={setOpenCardUser}  />}
       {openListPeople && <ListPeople onClosePeople={handlePeopleClose} setLocal={setLocalDestination} />}
       {openListSchool && <ListSchool onCloseSchool={handleSchoolClose} setLocal={setLocalDestination} />}

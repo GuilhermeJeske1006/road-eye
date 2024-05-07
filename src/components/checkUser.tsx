@@ -85,7 +85,7 @@ export default function CheckUser(props: { onCloseCheck: (isOpenCheck: boolean) 
       <Text style={styles.titleAdress}>Selecione a sua escola</Text>
 
       <FlatList
-        data={schools}
+        data={schools?.body}
         renderItem={renderItemSchool}
         keyExtractor={(item) => item.name}
       />
