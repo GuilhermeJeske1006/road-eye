@@ -22,6 +22,7 @@ import BtnFloating from "../../components/geral/btn-floating";
 import CardDriver from "../../components/cardDriver";
 import CardModal from "../../components/geral/card-modal";
 import CardUser from "../../components/cardUser";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 
@@ -30,7 +31,7 @@ export default function HomeScreen() {
   const mapRef = useRef<MapView>(null)
   const [location, setLocation] = useState<null | LocationObject>();
 
-  const [isDriver] = useState<boolean>(true);
+  const [isDriver, setIsDriver] = useState<boolean>(true);
   const [isAuth, setIsAuth] = useState<boolean>(false);
   const [isUSer, setIsUSer] = useState<boolean>(false);
   const [openNewAdress, setOpenAdress] = useState<boolean>(false);
@@ -52,6 +53,25 @@ export default function HomeScreen() {
     
   ]
 
+
+  useEffect(() => {
+    const fetchRole = async () => {
+      try {
+        const role = await AsyncStorage.getItem('roleEnum');
+        if (role === 'DRIVER') {
+          setIsDriver(true);
+          setIsUSer(false);
+        } else {
+          setIsUSer(true);
+          setIsDriver(false);
+        }
+      } catch (error) {
+        console.error('Error fetching role:', error);
+      }
+    };
+
+    fetchRole();
+  }, []); 
 
   async function requestLocationPermission() {
     const granted = requestForegroundPermissionsAsync();
