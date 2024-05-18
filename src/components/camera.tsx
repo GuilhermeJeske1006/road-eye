@@ -1,24 +1,28 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Alert, SafeAreaView, StyleSheet, Text, TouchableOpacity, View, Modal, Image } from "react-native";
-import { Camera, CameraType } from "expo-camera";
+import { CameraView, useCameraPermissions } from 'expo-camera';
 import BtnFloating from "./geral/btn-floating";
 import BtnPrimary from "./geral/btn-primary";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useDispatch } from "react-redux";
+import { putUpdateImage } from "../store/Route/thunks";
+import base64 from 'react-native-base64'
 
 export default function CameraComponent(props: {
   setOpenCamera: (openCamera: boolean) => void;
   people?: any;
 
 }) {
-  const [isFlash, setIsFlash] = useState<boolean>(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
-  const [type, setType] = useState(CameraType.front);
-  const cameraRef = useRef<Camera>(null);
+  const [facing, setFacing] = useState('back');
+  const cameraRef = useRef<CameraView>(null);
   const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
+  const [permission, requestPermission] = useCameraPermissions();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
+      const { status } = await requestPermission();
       setHasPermission(status == 'granted')
     })();
   }, [])
@@ -32,6 +36,10 @@ export default function CameraComponent(props: {
 
   }
 
+  const toggleCameraFacing = () =>  {
+    setFacing(current => (current === 'back' ? 'front' : 'back'));
+  }
+
   async function takePicture() {
     if (cameraRef) {
       const data = await cameraRef.current.takePictureAsync();
@@ -39,31 +47,22 @@ export default function CameraComponent(props: {
     }
   }
 
-  console.log(props.people);
-
   async function sendPicture() {
     if (capturedPhoto) {
-      const data = new FormData();
-      data.append('file', capturedPhoto);
-      fetch('http://api.com', {
-        method: 'POST',
-        body: data,
-        headers: {
-          'content-type': 'multipart/form-data'
-        }
-      }).then(response => {
-        response.json().then(data => {
-          console.log(data);
-        })
-      })
+      const base = base64.encode(capturedPhoto);
+      console.log(base);
+      Alert.alert(base);
+
+      
+      dispatch(putUpdateImage('1', capturedPhoto));
     }
   }
   return (
     <SafeAreaView style={styles.container}>
 
-      <Camera
+      <CameraView
         style={styles.image}
-        type={type}
+        // facing={facing} 
         ref={cameraRef}
       >
               
@@ -84,15 +83,13 @@ export default function CameraComponent(props: {
               </TouchableOpacity>
             )
           }
-          <BtnFloating icon="camera-flip-outline" fn={() => setType(
-            type === CameraType.back ? CameraType.front : CameraType.back
-          )} right={5} top={150} />
+          <BtnFloating icon="camera-flip-outline" fn={toggleCameraFacing} right={5} top={150} />
           <TouchableOpacity onPress={takePicture} style={[styles.buttonCamera, { marginTop: 30, }]}>
             <Text style={styles.buttonText}>Tirar a foto</Text>
           </TouchableOpacity>
 
         </View>
-      </Camera>
+      </CameraView>
 
       {
         capturedPhoto && (

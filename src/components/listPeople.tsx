@@ -6,9 +6,13 @@ import ItemSelected from "./geral/item-seleted";
 import BtnPrimary from "./geral/btn-primary";
 import ModalComponent from "./geral/modal";
 import CameraComponent from "./camera";
+import CardPeriod from "./cardPeriod";
+import { useSelector } from "react-redux";
 
 export default function ListPeople(props: { onClosePeople: (isOpenCheck: boolean) => void, setLocal: (local: object) => void }) {
   const [openCheck, setOpenCheck] = useState<boolean>(false);
+  const [openPeriod, setOpenPeriod] = useState<boolean>(true);
+  const students = useSelector((state: any) => state.RouteReducer.data);
 
   const handleCheckClose = () => {
     props.onClosePeople(false);
@@ -17,10 +21,10 @@ export default function ListPeople(props: { onClosePeople: (isOpenCheck: boolean
   }
 
   const submit = () => {
-    if (selectedItemGo === null || selectedItemSchool === null) {
+    if (selectedItemGo === null) {
       return;
     }
-    console.log(selectedItemGo, selectedItemSchool);
+    console.log(selectedItemGo, 'selectedItemGo');
     props.setLocal(selectedItemSchool);
     handleCheckClose();
   }
@@ -32,22 +36,20 @@ export default function ListPeople(props: { onClosePeople: (isOpenCheck: boolean
   const setCloseCamera = (closeCamera: boolean) => {
     setSelectedItemSchool(null)
   }
-
-
-  const dataSchool = [
-    { key: "João da silva" },
-    { key: "GUILHERME" },
-    { key: "Marcos da silva" },
-    { key: "KID Bengala" },
-    { key: 'Mario do armario'}
-  ]
+  
+  const onClosePeriod = (isOpenCheck: boolean) => {
+    setOpenPeriod(false)
+  }
+  const setPeriod = (local: object) => {
+    setOpenPeriod(true)
+  }
 
   const renderItemSchool = ({ item }) => (
     <ItemSelected
       item={{
-        key: item.key,
-        label: item.key,
-        image: 'https://www.w3schools.com/w3images/avatar2.png'
+        key: item.id,
+        label: item.user.username,
+        image: item.imageData
       }}
       IconCamera="camera"
       selectedItemGo={selectedItemSchool}
@@ -58,30 +60,31 @@ export default function ListPeople(props: { onClosePeople: (isOpenCheck: boolean
 
 
   return (
-    
-    <ModalComponent handleCheckClose={handleCheckClose}>
-      <Text style={styles.titleAdress}>Alunos da rota</Text>
+    <View>
+      {openPeriod ? (
+        <CardPeriod onClosePeriod={onClosePeriod} setPeriod={setPeriod} />
+      ) : (
+        <ModalComponent handleCheckClose={handleCheckClose}>
+          <Text style={styles.titleAdress}>Alunos da rota</Text>
 
-      <FlatList
-        data={dataSchool}
-        renderItem={renderItemSchool}
-        keyExtractor={(item) => item.key}
-      />
+          <FlatList
+            data={students}
+            renderItem={renderItemSchool}
+            keyExtractor={(item) => item.user.username.toString()}
+          />
 
-      <BtnPrimary fn={submit} text="Ir agora" />
+          <BtnPrimary fn={submit} text="Ir agora" />
 
-      {
-        selectedItemSchool && (
-          <Modal style={{ flex: 1}}>
-          <CameraComponent setOpenCamera={setCloseCamera} people={selectedItemSchool} />
-    
-          </Modal>
-        )
-      }
-
-    </ModalComponent>
+          {selectedItemSchool && (
+            <Modal style={{ flex: 1 }}>
+              <CameraComponent setOpenCamera={setCloseCamera} people={selectedItemSchool} />
+            </Modal>
+          )}
+        </ModalComponent>
+      )}
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   titleAdress: {

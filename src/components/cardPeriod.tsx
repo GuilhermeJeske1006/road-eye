@@ -1,49 +1,47 @@
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import { useEffect, useState } from "react";
 import ItemSelected from "./geral/item-seleted";
 import BtnPrimary from "./geral/btn-primary";
 import ModalComponent from "./geral/modal";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { getSchool } from "../store/school/thunks";
+import { getStudentPeriod } from "../store/Route/thunks";
 
-export default function CardPeriod(props: { onCloseCheck: (isOpenCheck: boolean) => void, setLocal: (local: object) => void }) {
-  const [openCheck, setOpenCheck] = useState<boolean>(false);
-  const schools = useSelector((state: any) => state.SchoolReducer.data);
+export default function CardPeriod(props: { onClosePeriod: (isOpenCheck: boolean) => void, setPeriod: (local: object) => void }) {
 
   const dispatch = useDispatch();
 
   const handleCheckClose = () => {
-    props.onCloseCheck(false);
-    setOpenCheck(false);
+    props.onClosePeriod(false);
 
   }
 
   const submit = () => {
-    if (selectedItemGo === null || selectedItemSchool === null) {
+    if (selectedItemGo === null) {
       return;
     }
-    console.log(selectedItemGo, selectedItemSchool);
-    props.setLocal(selectedItemSchool);
+    const currentDate = new Date().toISOString().split('T')[0]
+    
+    let period = selectedItemGo;
+    if(period == 'Matutino'){
+      period = 'MORNING';
+    }if(period == 'Vespertino'){
+      period = 'EVENING';
+    }if(period == 'Noturno'){
+      period = 'NIGHT';
+    }
+    console.log(period, currentDate);
+    dispatch(getStudentPeriod(period, '2024-05-13'))
+
+    props.setPeriod(selectedItemGo);
     handleCheckClose();
   }
 
-  useEffect(() => {
-    schools
-  }, [schools])
-
-  useEffect(() => {
-    dispatch(getSchool())
-  }, [])
-
 
   const [selectedItemGo, setSelectedItemGo] = useState(null);
-  const [selectedItemSchool, setSelectedItemSchool] = useState(null);
 
   const data = [
-    { key: "Maturino" },
+    { key: "Matutino" },
     { key: "Vespertino" },
     { key: "Noturno" },
   ];
