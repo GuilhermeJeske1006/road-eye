@@ -23,6 +23,7 @@ import CardDriver from "../../components/cardDriver";
 import CardModal from "../../components/geral/card-modal";
 import CardUser from "../../components/cardUser";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useSelector } from "react-redux";
 
 
 
@@ -47,12 +48,8 @@ export default function HomeScreen() {
   const origin = { latitude: 37.3318456, longitude: -122.0296002 };
   const destination = { latitude: 37.771707, longitude: -122.4053769 };
   const [openCamera, setOpenCamera] = useState<boolean>(false);
-
-  const locations = [
-    { latitude: 37.3318456, longitude: -122.0296002 },
-    
-  ]
-
+  const [intermediatePoints, setIntermediatePoints] = useState([]);
+  const students = useSelector((state: any) => state.RouteReducer.data);
 
   useEffect(() => {
     const fetchRole = async () => {
@@ -128,19 +125,30 @@ export default function HomeScreen() {
       longitude: longitude
     })
   }
-  const setLocalOrigin = (local) => {
+  const setLocalOriginUser = (local) => {
     setOriginLocation({
-      latitude: -27.082058843712982, longitude: -48.96839966171515
+      latitude: local.latitude, longitude: local.longitude
     })
-    console.log(originLocation, 'origin');
   }
 
   const setLocalDestination = (local) => {
     setDestinationLocation({
-      latitude: -27.084351414741224, longitude: -48.969569104890034
+      latitude: local.address.latitude, longitude: local.address.longitude
     })
-    console.log(local, 'local');
   }
+
+  useEffect(() => {
+      const intermediatePointsArray = [
+        { latitude: -27.10482619524239, longitude: -48.99447837066357 },
+         {latitude: -27.0866203989047, longitude: -48.97767921556972},
+         {latitude: -27.127716580394903, longitude: -48.91217850963919}
+      ];
+      // Set the intermediate points state
+      if(destinationLocation){
+        setIntermediatePoints(intermediatePointsArray);
+      }
+
+  }, [originLocation, destinationLocation]);
 
   return (
     <View style={{  flex: 1 }}>
@@ -148,71 +156,74 @@ export default function HomeScreen() {
       {location && !openCamera && (
         <MapView
           ref={mapRef}
+          style={styles.map}
           initialRegion={{
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
             latitudeDelta: 0.005,
             longitudeDelta: 0.005,
           }}
-          showsUserLocation={true}
-          showsMyLocationButton={false}
-          zoomControlEnabled={true}
-          loadingEnabled={true}
-          loadingBackgroundColor={'#fff'}
-          toolbarEnabled={false}
-          style={styles.map}
         >
-
-          <CustomMarker
-            latitude={-23.5544}
-            longitude={-46.6296}
-            color={"#0F9D58"}
-            id={'1'}
-            onPress={() => setOpenCardUser(true)}
-          />
-
-
-          {destinationLocation ?
-            <MapViewDirections
-              origin={
-                originLocation || location.coords
-              }
-              destination={
-                destinationLocation
-              }
-              apikey={GOOGLE_MAPS_APIKEY}
-              strokeWidth={5}
-              strokeColor="#EDB047"
-              lineDashPattern={[0]}
-              optimizeWaypoints={true}
-              resetOnChange={false}
-              precision={'high'}
-              onError={(errorMessage) => {
-                setDestinationLocation(null);
-                alert('Erro ao obter direções...');
-              }}
-            >
-            </MapViewDirections>
-            :
-            null
-          }
-          <CustomMarker
-            latitude={location.coords.latitude}
-            longitude={location.coords.longitude}
-            color={"#BC1C2C"}
-            id={'50'}
-            onPress={() => { setOpenCardDriver(true) }}
+          
+          {/* Render intermediate points */}
+          {intermediatePoints.map((point, index) => (
+            <CustomMarker
+              key={index}
+              onPress={handleCardClose(true)}
+              latitude={point.latitude}
+              longitude={point.longitude}
+              color={"#0F9D58"} // Change color as needed
+              id={`intermediate_${index}`}
             />
+          ))}
+          {/* Render MapViewDirections with waypoints */}
+          <MapViewDirections
+            origin={originLocation || location.coords}
+            destination={destinationLocation}
+            waypoints={intermediatePoints}
+            apikey={GOOGLE_MAPS_APIKEY}
+            strokeWidth={5}
+            strokeColor="#EDB047"
+            lineDashPattern={[0]}
+            optimizeWaypoints={true}
+            resetOnChange={false}
+            precision={'high'}
+            onError={(errorMessage) => {
+              setDestinationLocation(null);
+              alert('Error getting directions: ' + errorMessage);
+            }}
+          />
+          {/* Render user marker */}
+          <Marker
+            coordinate={{ latitude: location?.coords?.latitude, longitude: location?.coords?.longitude }}
+            title="User"
+            pinColor="#BC1C2C"
+          />
+          {
+            destinationLocation && (
+              <Marker
+                coordinate={destinationLocation}
+                title="User"
 
+                pinColor="#BC1C2C"
+              />
+            )
+          }
+          
         </MapView>
       )}
-      <TouchableOpacity
+      {
+        isDriver && (
+        <TouchableOpacity
         style={styles.buttonSpeed}
       >
         <Text style={styles.textSpeed}>
           {location?.coords.speed.toFixed()} KM/H
           </Text>
-      </TouchableOpacity>
+        </TouchableOpacity>
+        )
+      }
+      
 
       {isUSer && (<BtnFloating icon="format-list-bulleted" fn={() => setListAdress(true)} right={5} bottom={110} />)}
       {isUSer && (<BtnFloating icon="format-list-checks" fn={() => setOpenCheck(true)} right={5} bottom={210} />)}
@@ -225,7 +236,7 @@ export default function HomeScreen() {
       {openListPeople && <ListPeople onClosePeople={handlePeopleClose} setLocal={setLocalDestination} />}
       {openListSchool && <ListSchool onCloseSchool={handleSchoolClose} setLocal={setLocalDestination} />}
       {openCardDriver && <CardDriver openCardDriver={openCardDriver} setOpenCardDriver={setOpenCardDriver} />}
-      {openListAdress && <ListAdress open={openListAdress} onCloseList={handleListClose} setLocal={setLocalOrigin} />}
+      {openListAdress && <ListAdress open={openListAdress} onCloseList={handleListClose} setLocal={setLocalOriginUser} />}
       {openCheck && <CheckUser onCloseCheck={handleCheckClose} setLocal={setLocalDestination} />}
     </View>
   );

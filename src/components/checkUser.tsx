@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useEffect, useState } from "react";
@@ -68,8 +68,8 @@ export default function CheckUser(props: { onCloseCheck: (isOpenCheck: boolean) 
     console.log(item, 'item'),
     <ItemSelected
       item={{
-        key: item.id,
-        label: item.name
+        key: item.school.id,
+        label: item.school.name
 
       }}
       selectedItemGo={selectedItemSchool}
@@ -99,6 +99,7 @@ export default function CheckUser(props: { onCloseCheck: (isOpenCheck: boolean) 
       />
 
       <BtnPrimary fn={submit} text="Enviar" />
+
     </ModalComponent>
   );
 }

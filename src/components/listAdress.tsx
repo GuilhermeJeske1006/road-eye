@@ -51,7 +51,7 @@ export default function ListAdress(props: { open: boolean, onCloseList: (isOpenL
     <ItemSelected
       key={item.address.id}
       item={{
-        key: item.address.id,
+        key: item.address,
         label: `${item.address.city}, ${item.address.state}, ${item.address.postCode}`
       }}
       selectedItemGo={selectedItemGo}

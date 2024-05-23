@@ -17,6 +17,7 @@ import store from "./src/store/store";
 import 'react-native-reanimated';
 import CameraComponent from "./src/components/camera";
 import TesteScreen from "./src/screen/Teste";
+import FlashMessage from "react-native-flash-message";
 
 const Drawer = createDrawerNavigator();
 
@@ -36,16 +37,8 @@ const MyTheme = {
 
 export default function App() {
 
-  const isDriver = useState<boolean>(true);
-  const [isAuth, setIsAuth] = useState<boolean>(true);
-  const isUSer = useState<boolean>(true);
-
-  const Login = (isAuth: boolean) => {
-    setIsAuth(isAuth);
-  }
-
-
-
+  const [isAuth, setIsAuth] = useState<boolean>(false);
+  
   const handleLogout = () => {
     setIsAuth(false); 
   };
@@ -68,6 +61,7 @@ export default function App() {
             <Text style={styles.text}>Sair</Text>
           </TouchableOpacity>
         )}
+        <FlashMessage position="bottom"  />
       </View>
     </Provider>
   );

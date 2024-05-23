@@ -89,7 +89,6 @@ export default function StoreAdress(props: { open: boolean, onClose: (isOpen: bo
 
     return (
         <ModalComponent handleCheckClose={handleCloseModal}>
-             <ScrollView  style={{ marginBottom: 5 }}>
                 <Text style={styles.titleAdress}>Adicione um novo endereço</Text>
                 {error.erroCep && <TextError error={error.erroCep} />}
                 <InputText
@@ -142,8 +141,6 @@ export default function StoreAdress(props: { open: boolean, onClose: (isOpen: bo
                     value={number}
                     attribute={{ keyboardType: "numeric" }}
                 />
-            </ScrollView >
-
             <BtnPrimary fn={handleSubmit} text="Salvar" />
         </ModalComponent>
         
@@ -151,13 +148,6 @@ export default function StoreAdress(props: { open: boolean, onClose: (isOpen: bo
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-    scrollView: {
-        flexGrow: 1,
-    },
-
     adressContainer: {
         position: "absolute",
         bottom: 0,

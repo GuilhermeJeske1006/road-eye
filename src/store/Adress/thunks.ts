@@ -6,6 +6,7 @@ import { Adress } from '../../Interfaces/adress';
 import apiViaCep from '../../services/apiViaCep';
 import api from '../../services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { showMessage } from 'react-native-flash-message';
 
 
 export const fetchCep = (cep: string): any => async (dispatch: Dispatch<CepActionTypes>) => {
@@ -15,6 +16,10 @@ export const fetchCep = (cep: string): any => async (dispatch: Dispatch<CepActio
     dispatch(fetchCepSuccess(response.data));
   } catch (error) {
     dispatch(fetchCepFailure('Erro ao buscar o CEP.'));
+    showMessage({
+      message: "Erro ao buscar dados!",
+      type: "danger",
+    });
   }
 };
 
@@ -27,6 +32,10 @@ export const getAddress = (): any => async (dispatch: Dispatch<CepActionTypes>) 
     dispatch(fetchCepSuccess(response.data));
     return response.data;
   } catch (error) {
+    showMessage({
+      message: "Erro ao buscar dados!",
+      type: "danger",
+    });
     dispatch(fetchCepFailure('Erro ao buscar o CEP.'));
     throw error;
   }
@@ -38,10 +47,17 @@ export const postAddress = (address: Object): any => async (dispatch: Dispatch<C
     const user_id = await AsyncStorage.getItem('user_id');
     const response = await api.post(`/address/user/${user_id}`, address);
     dispatch(fetchCepSuccess(response.data));
-    console.log(response.data);
+    showMessage({
+      message: "Endereço enviado com sucesso!",
+      type: "success",
+    });
     return response.data;
   } catch (error) {
     console.log(error);
+    showMessage({
+      message: "Erro ao enviar dados!",
+      type: "danger",
+    });
     dispatch(fetchCepFailure('Erro ao buscar o CEP.'));
     throw error;
   }
