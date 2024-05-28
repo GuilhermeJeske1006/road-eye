@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { ScrollView } from 'react-native-virtualized-view'
 
 export default function ModalComponent(props: {
   handleCheckClose: () => void;
@@ -12,7 +13,9 @@ export default function ModalComponent(props: {
         <Ionicons name="remove-outline" size={50} />
       </TouchableOpacity>
 
-      {props.children}
+      {/* <ScrollView contentContainerStyle={styles.scrollViewContent} nestedScrollEnabled> */}
+        {props.children}
+      {/* </ScrollView> */}
     </View>
   );
 }
@@ -27,15 +30,17 @@ const styles = StyleSheet.create({
     padding: 20,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
+    // maxHeight: '100%', 
   },
-
+  scrollViewContent: {
+    flexGrow: 1,
+  },
   titleAdress: {
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 10,
   },
   cloneModal: {
-    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",

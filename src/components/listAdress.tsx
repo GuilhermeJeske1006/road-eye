@@ -38,12 +38,17 @@ export default function ListAdress(props: { open: boolean, onCloseList: (isOpenL
     setOpenAdress(isOpen);
   };
 
+  const openStoreAdress = () => {
+    setListAdress(false);
+    setOpenAdress(true);
+  }
+
   useEffect(() => {
     getApiAddress();
   }, [])
 
   const getApiAddress = () => {
-      dispatch(getAddress());
+    dispatch(getAddress());
   }
 
 
@@ -65,6 +70,7 @@ export default function ListAdress(props: { open: boolean, onCloseList: (isOpenL
 
   return (
     <ModalComponent handleCheckClose={handleListClose}>
+      
       <Text style={styles.titleAdress}>Seus endereços</Text>
       <ItemSelected
         item={{
@@ -87,10 +93,7 @@ export default function ListAdress(props: { open: boolean, onCloseList: (isOpenL
           label: "Cadastrar novo endereço"
         }}
         selectedItemGo={selectedItemGo}
-        setSelectedItem={() => {
-          setOpenAdress(true);
-          setListAdress(false);
-        }}
+        setSelectedItem={openStoreAdress}
         icon={'plus-circle-outline'}
         icon2={'plus-circle-outline'}
       />

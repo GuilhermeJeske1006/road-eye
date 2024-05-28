@@ -12,7 +12,8 @@ import { getSchool } from "../store/school/thunks";
 export default function CheckUser(props: { onCloseCheck: (isOpenCheck: boolean) => void, setLocal: (local: object) => void }) {
   const [openCheck, setOpenCheck] = useState<boolean>(false);
   const schools = useSelector((state: any) => state.SchoolReducer.data);
-
+  const [selectedItemGo, setSelectedItemGo] = useState(null);
+  const [selectedItemSchool, setSelectedItemSchool] = useState(null);
   const dispatch = useDispatch();
 
   const handleCheckClose = () => {
@@ -39,8 +40,7 @@ export default function CheckUser(props: { onCloseCheck: (isOpenCheck: boolean) 
   }, [])
 
 
-  const [selectedItemGo, setSelectedItemGo] = useState(null);
-  const [selectedItemSchool, setSelectedItemSchool] = useState(null);
+
 
   const data = [
     { key: "Não irei" },

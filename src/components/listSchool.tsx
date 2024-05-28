@@ -26,17 +26,9 @@ export default function ListSchool(props: { onCloseSchool: (isOpenCheck: boolean
 
   const dispatch = useDispatch();
 
-  const setSelectedItem = (item) => {
-    props.setLocal(item);
-    setSelectedItemGo(item);
-  }
-
-
   useEffect(() => {
     setOpenAdress(openNewAdress);
   }, [openNewAdress])
-
-
 
     const handleCheckClose = () => {
     props.onCloseSchool(false);
@@ -46,40 +38,35 @@ export default function ListSchool(props: { onCloseSchool: (isOpenCheck: boolean
 
 
   useEffect(() => {
-    getApiSchool();
+    dispatch(getSchool());
   }, [])
 
-  const getApiSchool = () => {
-      dispatch(getSchool());
-
-    
-  }
 
   const onClosePeriod = (isOpenCheck: boolean) => {
     setOpenPeriod(false)
   }
   const setPeriod = (local: object) => {
     setOpenPeriod(true)
+    console.log(local, 'fewfewfwef');
   }
 
     const submit = () => {
-    if (selectedItemGo === null || selectedItemSchool === null) {
+    if (selectedItemGo === null) {
       return;
     }
-    console.log(selectedItemGo, selectedItemSchool);
-    props.setLocal(selectedItemSchool);
+    console.log(selectedItemGo, 'selectedItemGo');
+    props.setLocal(selectedItemGo);
     handleCheckClose();
   }
 
   const renderItem = ({ item }) => (
     <ItemSelected
-      key={item.school.id}
       item={{
         key: item,
         label: `${item.school.name}`
       }}
       selectedItemGo={selectedItemGo}
-      setSelectedItem={setSelectedItem}
+      setSelectedItem={setSelectedItemGo}
       icon="school"
       icon2="school"
     />
@@ -90,14 +77,14 @@ export default function ListSchool(props: { onCloseSchool: (isOpenCheck: boolean
   return (
     <View>
       {openPeriod ? (
-        <CardPeriod onClosePeriod={onClosePeriod} setPeriod={setPeriod} />
+        <CardPeriod onClosePeriod={onClosePeriod} setPeriod={setPeriod}  />
       ) : (
         <ModalComponent handleCheckClose={handleCheckClose}>
         <Text style={styles.titleAdress}>Selecione a escola</Text>
         <FlatList
           data={schools?.body}
           renderItem={renderItem}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.body}
         />
         <BtnPrimary fn={submit} text="Ir agora" />
   

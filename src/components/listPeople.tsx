@@ -42,14 +42,15 @@ export default function ListPeople(props: { onClosePeople: (isOpenCheck: boolean
   }
   const setPeriod = (local: object) => {
     setOpenPeriod(true)
+    console.log(local, 'f´wokefpowpefpweifo');
   }
 
   const renderItemSchool = ({ item }) => (
     <ItemSelected
       item={{
-        key: item.id,
-        label: item.user.username,
-        image: item.imageData
+        key: item.studentRoute.id,
+        label: item.studentRoute.user.name,
+        image: item.studentRoute.imageData
       }}
       IconCamera="camera"
       selectedItemGo={selectedItemSchool}
@@ -70,7 +71,7 @@ export default function ListPeople(props: { onClosePeople: (isOpenCheck: boolean
           <FlatList
             data={students}
             renderItem={renderItemSchool}
-            keyExtractor={(item) => item.user.username.toString()}
+            keyExtractor={(item) => item.user?.username.toString()}
           />
 
           <BtnPrimary fn={submit} text="Ir agora" />
