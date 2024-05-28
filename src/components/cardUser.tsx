@@ -7,6 +7,7 @@ import BtnPrimary from "./geral/btn-primary";
 export default function CardUser(props: {
   openCardUser: boolean,
   setOpenCardUser: (isOpen: boolean) => void,
+  setUserSelect: object
 }) {
   return (
     <CardModal fn={props.setOpenCardUser}>

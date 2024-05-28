@@ -47,7 +47,6 @@ export default function ListSchool(props: { onCloseSchool: (isOpenCheck: boolean
   }
   const setPeriod = (local: object) => {
     setOpenPeriod(true)
-    console.log(local, 'fewfewfwef');
   }
 
     const submit = () => {

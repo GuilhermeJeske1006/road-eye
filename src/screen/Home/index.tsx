@@ -48,7 +48,10 @@ export default function HomeScreen() {
   const [intermediatePoints, setIntermediatePoints] = useState([]);
   const students = useSelector((state: any) => state.RouteReducer.data);
   const [motorista] = useState({ latitude: -27.10482619524239, longitude: -48.99447837066357 })
+  const [userSelect, setUserSelect] = useState(null);
+
   const dispatch = useDispatch()
+
   useEffect(() => {
     const fetchRole = async () => {
       try {
@@ -90,6 +93,9 @@ export default function HomeScreen() {
       },
       (location) => {
         setLocation(location);
+        if(isDriver){
+          console.log(location.coords, 'location.coords')
+        }
         mapRef.current?.animateCamera({
           pitch: 70,
           center: location.coords,
@@ -97,6 +103,10 @@ export default function HomeScreen() {
       }
     );
   }, []);
+
+  useEffect(() => {
+
+  },[])
 
 
   const handleListClose = (isOpen) => {
@@ -114,6 +124,11 @@ export default function HomeScreen() {
   }
   const handleCardClose = (isOpen) => {
     setOpenCardUser(isOpen);
+  }
+
+  const handleCardUserOpen = (item) => {
+    setUserSelect(item)
+    setOpenCardUser(true);
   }
 
   const getDirections = (latitude, longitude) => {
@@ -169,7 +184,7 @@ export default function HomeScreen() {
           {intermediatePoints.map((point, index) => (
             <CustomMarker
               key={index}
-              onPress={()=> handleCardClose(true)}
+              onPress={()=> handleCardUserOpen(point)}
               latitude={point.latitude}
               longitude={point.longitude}
               color={"#0F9D58"} // Change color as needed
@@ -183,7 +198,7 @@ export default function HomeScreen() {
             waypoints={intermediatePoints}
             apikey={GOOGLE_MAPS_APIKEY}
             strokeWidth={5}
-            strokeColor="#EDB047"
+            strokeColor="#3a34eb"
             lineDashPattern={[0]}
             optimizeWaypoints={true}
             resetOnChange={false}
@@ -194,12 +209,24 @@ export default function HomeScreen() {
             }}
           />
           {/* Render user marker */}
+            {
+              !isDriver ? (
+                <Marker
+                  coordinate={{ latitude: location?.coords?.latitude, longitude: location?.coords?.longitude }}
+                  title="Motorista"
+                  pinColor="#000"
+                />
+              ) : (
+                <Marker
+                coordinate={{ latitude: location?.coords?.latitude, longitude: location?.coords?.longitude }}
+                title="User"
+                pinColor="#BC1C2C"
+              />
+              )
+            }
+          
 
-          <Marker
-            coordinate={{ latitude: location?.coords?.latitude, longitude: location?.coords?.longitude }}
-            title="User"
-            pinColor="#BC1C2C"
-          />
+
           {
             destinationLocation && (
               <Marker
@@ -233,8 +260,8 @@ export default function HomeScreen() {
       {/* {isDriver && (<BtnFloating icon="camera" fn={() => setOpenCamera(true)} right={5} bottom={290} />)} */}
     
       {openCamera && <CameraComponent setOpenCamera={setOpenCamera} />}      
-      {openCardUser && <CardUser openCardUser={openCardUser} setOpenCardUser={setOpenCardUser}  />}
-      {openListPeople && <ListPeople onClosePeople={handlePeopleClose} setLocal={setLocalDestination} />}
+      {openCardUser && <CardUser setUserSelect={setUserSelect} openCardUser={openCardUser} setOpenCardUser={setOpenCardUser}  />}
+      {openListPeople && <ListPeople destinationLocation={destinationLocation} onClosePeople={handlePeopleClose} setLocal={setLocalDestination} />}
       {openListSchool && <ListSchool onCloseSchool={handleSchoolClose} setLocal={setLocalDestination} />}
       {openCardDriver && <CardDriver openCardDriver={openCardDriver} setOpenCardDriver={setOpenCardDriver} />}
       {openListAdress && <ListAdress open={openListAdress} onCloseList={handleListClose} setLocal={setLocalOriginUser} />}

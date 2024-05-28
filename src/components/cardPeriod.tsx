@@ -6,6 +6,7 @@ import ModalComponent from "./geral/modal";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { getStudentPeriod } from "../store/Route/thunks";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function CardPeriod(props: { onClosePeriod: (isOpenCheck: boolean) => void, setPeriod: (local: object) => void }) {
 
@@ -16,7 +17,7 @@ export default function CardPeriod(props: { onClosePeriod: (isOpenCheck: boolean
 
   }
 
-  const submit = () => {
+  const submit = async () => {
     if (selectedItemGo === null) {
       return;
     }
@@ -31,7 +32,10 @@ export default function CardPeriod(props: { onClosePeriod: (isOpenCheck: boolean
       period = 'NIGHT';
     }
     console.log(period, currentDate);
-    dispatch(getStudentPeriod(period, '2024-05-13'))
+    dispatch(getStudentPeriod(period, '2024-05-28'))
+
+    await AsyncStorage.setItem('period', period);
+
 
     props.setPeriod(selectedItemGo);
     handleCheckClose();

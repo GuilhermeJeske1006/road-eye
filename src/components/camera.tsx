@@ -16,7 +16,7 @@ export default function CameraComponent(props: {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [facing, setFacing] = useState('back');
   const cameraRef = useRef<CameraView>(null);
-  const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
+  const [capturedPhoto, setCapturedPhoto] = useState<any | null>(null);
   const [permission, requestPermission] = useCameraPermissions();
   const dispatch = useDispatch();
 
@@ -49,12 +49,8 @@ export default function CameraComponent(props: {
 
   async function sendPicture() {
     if (capturedPhoto) {
-      const base = base64.encode(capturedPhoto);
-      console.log(base);
-      Alert.alert(base);
-
       
-      dispatch(putUpdateImage('1', capturedPhoto));
+      dispatch(putUpdateImage(1, capturedPhoto));
     }
   }
   return (

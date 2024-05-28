@@ -24,10 +24,18 @@ export const getStudentPeriod = (periodEnum: string, localDate: any): any => asy
   }
 }
 
-export const putUpdateImage = (route_id: string, image: any): any => async (dispatch: Dispatch<RouteActionTypes>) => {
+export const putUpdateImage = (route_id: any, image: File): any => async (dispatch: Dispatch<RouteActionTypes>) => {
   dispatch(fetchRouteRequest());
   try {
-    const response = await api.get(`/studentRoute/${route_id}updateImage`, image);
+    const formData = new FormData();
+    formData.append('file', image);
+
+    const response = await api.put(`/studentRoute/${route_id}/updateImage`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+
     dispatch(fetchRouteSuccess(response.data));
     console.log(response.data);
     showMessage({
@@ -36,6 +44,7 @@ export const putUpdateImage = (route_id: string, image: any): any => async (disp
     });
     return response.data;
   } catch (error) {
+    console.log(error.message, 'erro');
     dispatch(fetchRouteFailure(error.message));
     showMessage({
       message: "Erro ao enviar a imagem! Tente novamente.",
@@ -43,4 +52,4 @@ export const putUpdateImage = (route_id: string, image: any): any => async (disp
     });
     throw error;
   }
-}
+};

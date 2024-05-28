@@ -9,7 +9,7 @@ import CameraComponent from "./camera";
 import CardPeriod from "./cardPeriod";
 import { useSelector } from "react-redux";
 
-export default function ListPeople(props: { onClosePeople: (isOpenCheck: boolean) => void, setLocal: (local: object) => void }) {
+export default function ListPeople(props: { onClosePeople: (isOpenCheck: boolean) => void, setLocal: (local: object) => void, destinationLocation: any }) {
   const [openCheck, setOpenCheck] = useState<boolean>(false);
   const [openPeriod, setOpenPeriod] = useState<boolean>(true);
   const students = useSelector((state: any) => state.RouteReducer.data);
@@ -36,14 +36,6 @@ export default function ListPeople(props: { onClosePeople: (isOpenCheck: boolean
   const setCloseCamera = (closeCamera: boolean) => {
     setSelectedItemSchool(null)
   }
-  
-  const onClosePeriod = (isOpenCheck: boolean) => {
-    setOpenPeriod(false)
-  }
-  const setPeriod = (local: object) => {
-    setOpenPeriod(true)
-    console.log(local, 'f´wokefpowpefpweifo');
-  }
 
   const renderItemSchool = ({ item }) => (
     <ItemSelected
@@ -58,31 +50,30 @@ export default function ListPeople(props: { onClosePeople: (isOpenCheck: boolean
 
     />
   )
-
-
   return (
     <View>
-      {openPeriod ? (
-        <CardPeriod onClosePeriod={onClosePeriod} setPeriod={setPeriod} />
-      ) : (
-        <ModalComponent handleCheckClose={handleCheckClose}>
-          <Text style={styles.titleAdress}>Alunos da rota</Text>
+      <ModalComponent handleCheckClose={handleCheckClose}>
+        {props.destinationLocation ? (
+          <>
+            <Text style={styles.titleAdress}>Alunos da rota</Text>
 
-          <FlatList
-            data={students}
-            renderItem={renderItemSchool}
-            keyExtractor={(item) => item.user?.username.toString()}
-          />
+            {students.length === 0 && <Text>Nenhum aluno encontrado</Text>}
+            <FlatList
+              data={students}
+              renderItem={renderItemSchool}
+              keyExtractor={(item) => item.user?.username.toString()}
+            />
 
-          <BtnPrimary fn={submit} text="Ir agora" />
-
-          {selectedItemSchool && (
-            <Modal style={{ flex: 1 }}>
-              <CameraComponent setOpenCamera={setCloseCamera} people={selectedItemSchool} />
-            </Modal>
-          )}
-        </ModalComponent>
-      )}
+            {selectedItemSchool && (
+              <Modal style={{ flex: 1 }}>
+                <CameraComponent setOpenCamera={setCloseCamera} people={selectedItemSchool} />
+              </Modal>
+            )}
+          </>
+        ) : (
+          <Text style={styles.titleAdress}>Você primeiro precisa selecionar a escola e o periodo</Text>
+        )}
+      </ModalComponent>
     </View>
   );
 };
