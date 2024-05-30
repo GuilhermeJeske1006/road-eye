@@ -14,11 +14,12 @@ export default function CameraComponent(props: {
 
 }) {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
-  const [facing, setFacing] = useState('back');
+  const [facing, setFacing] = useState<any>('back');
   const cameraRef = useRef<CameraView>(null);
   const [capturedPhoto, setCapturedPhoto] = useState<any | null>(null);
   const [permission, requestPermission] = useCameraPermissions();
   const dispatch = useDispatch();
+  
 
   useEffect(() => {
     (async () => {
@@ -50,7 +51,7 @@ export default function CameraComponent(props: {
   async function sendPicture() {
     if (capturedPhoto) {
       
-      dispatch(putUpdateImage(1, capturedPhoto));
+      dispatch(putUpdateImage(props.people.studentRoute.user.id, capturedPhoto));
     }
   }
   return (
@@ -58,7 +59,7 @@ export default function CameraComponent(props: {
 
       <CameraView
         style={styles.image}
-        // facing={facing} 
+        facing={facing} 
         ref={cameraRef}
       >
               
@@ -75,7 +76,7 @@ export default function CameraComponent(props: {
       {
             props.people && (
               <TouchableOpacity  style={[styles.cardName, { marginTop: 30,  }]}>
-              <Text style={styles.buttonText}>Tirar foto de {props.people} </Text>
+              <Text style={styles.buttonText}>Tirar foto de {props.people.studentRoute.user.name} </Text>
               </TouchableOpacity>
             )
           }

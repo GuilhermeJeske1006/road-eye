@@ -16,7 +16,6 @@ import { Provider } from "react-redux";
 import store from "./src/store/store";
 import 'react-native-reanimated';
 import CameraComponent from "./src/components/camera";
-import TesteScreen from "./src/screen/Teste";
 import FlashMessage from "react-native-flash-message";
 
 const Drawer = createDrawerNavigator();
@@ -61,7 +60,7 @@ export default function App() {
             <Text style={styles.text}>Sair</Text>
           </TouchableOpacity>
         )}
-        <FlashMessage position="bottom"  />
+        <FlashMessage style={{ zIndex: 9999 }} position="center"  />
       </View>
     </Provider>
   );

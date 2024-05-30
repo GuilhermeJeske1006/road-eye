@@ -6,20 +6,39 @@ import StoreAdress from "./storeAdress";
 import ItemSelected from "./geral/item-seleted";
 import ModalComponent from "./geral/modal";
 import { useDispatch } from "react-redux";
-import { getAddress } from "../store/Adress/thunks";
+import { getAddress, postAddress, putActiveAddress } from "../store/Adress/thunks";
 import { useSelector } from "react-redux";
+import { LocationObject } from "expo-location";
 
 
-export default function ListAdress(props: { open: boolean, onCloseList: (isOpenList: boolean) => void, setLocal: (local: object) => void }) {
+export default function ListAdress(props: { 
+  open: boolean,
+   onCloseList: (isOpenList: boolean) => void, 
+   setLocal: (local: object) => void,
+   setLocalTime: any
+   }) {
   const [openNewAdress, setOpenAdress] = useState<boolean>(false);
   const [openListAdress, setListAdress] = useState<boolean>(false);
   const [selectedItemGo, setSelectedItemGo] = useState(null);
   const address = useSelector((state: any) => state.AdressReducer.data);
+
   const dispatch = useDispatch();
 
   const setSelectedItem = (item) => {
-    props.setLocal(item);
-    setSelectedItemGo(item);
+    try {
+      const data = {
+        idAddress: item.id
+      }
+      dispatch(putActiveAddress(data))
+      props.setLocal(item);
+      setSelectedItemGo(item);
+      handleListClose();
+    } catch (error) {
+      console.log(error)
+    } finally{
+      dispatch(getAddress());
+    }
+
   }
   useEffect(() => {
     setListAdress(props.open);
@@ -43,6 +62,9 @@ export default function ListAdress(props: { open: boolean, onCloseList: (isOpenL
     setOpenAdress(true);
   }
 
+  const postRealTimeLocation = () => {
+    dispatch(postAddress(props.setLocalTime));
+  }
   useEffect(() => {
     getApiAddress();
   }, [])
@@ -78,7 +100,7 @@ export default function ListAdress(props: { open: boolean, onCloseList: (isOpenL
           label: "Usar localização atual"
         }}
         selectedItemGo={selectedItemGo}
-        setSelectedItem={() => setSelectedItemGo('Tempo real')}
+        setSelectedItem={() => postRealTimeLocation()}
         icon={'map-marker-circle'}
         icon2={'map-marker-circle'}
       />

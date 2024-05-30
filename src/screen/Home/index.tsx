@@ -1,6 +1,5 @@
-import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
-import StoreAdress from "../../components/storeAdress";
 import ListAdress from "../../components/listAdress";
 import CheckUser from "../../components/checkUser";
 import { useEffect, useState, useRef } from "react";
@@ -11,8 +10,6 @@ import {
   watchPositionAsync,
   LocationAccuracy,
 } from "expo-location";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import MapViewDirections from "react-native-maps-directions";
 import CustomMarker from "../../components/customMarker";
 import ListSchool from "../../components/listSchool";
@@ -20,7 +17,6 @@ import ListPeople from "../../components/listPeople";
 import CameraComponent from "../../components/camera";
 import BtnFloating from "../../components/geral/btn-floating";
 import CardDriver from "../../components/cardDriver";
-import CardModal from "../../components/geral/card-modal";
 import CardUser from "../../components/cardUser";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSelector } from "react-redux";
@@ -91,11 +87,13 @@ export default function HomeScreen() {
         timeInterval: 1000,
         distanceInterval: 1,
       },
-      (location) => {
-        setLocation(location);
-        if(isDriver){
-          console.log(location.coords, 'location.coords')
+       async (location) => {
+        const role = await AsyncStorage.getItem('roleEnum');
+
+        if(role == 'DRIVER'){
+          // console.log(location.coords, 'location.coords')
         }
+        setLocation(location);
         mapRef.current?.animateCamera({
           pitch: 70,
           center: location.coords,
@@ -103,11 +101,6 @@ export default function HomeScreen() {
       }
     );
   }, []);
-
-  useEffect(() => {
-
-  },[])
-
 
   const handleListClose = (isOpen) => {
     setListAdress(isOpen);
@@ -122,10 +115,6 @@ export default function HomeScreen() {
   const handlePeopleClose = (isOpen) => {
     setListPeople(isOpen);
   }
-  const handleCardClose = (isOpen) => {
-    setOpenCardUser(isOpen);
-  }
-
   const handleCardUserOpen = (item) => {
     setUserSelect(item)
     setOpenCardUser(true);
@@ -157,9 +146,13 @@ export default function HomeScreen() {
       const studentsRota = students.map((item) => {
         return {
           latitude: item.userAddress.latitude,
-          longitude: item.userAddress.longitude
+          longitude: item.userAddress.longitude,
+          username: item.studentRoute.user.username,
+          image: item.studentRoute.imageData,
+          id: item.studentRoute.user.id,
+          phone: item.studentRoute.user.phone,
+          school: item.studentRoute.school.name
         }
-      
       });
   
       setIntermediatePoints(studentsRota); 
@@ -209,30 +202,40 @@ export default function HomeScreen() {
             }}
           />
           {/* Render user marker */}
-            {
-              !isDriver ? (
-                <Marker
-                  coordinate={{ latitude: location?.coords?.latitude, longitude: location?.coords?.longitude }}
-                  title="Motorista"
-                  pinColor="#000"
+          {
+          !isDriver ? (
+            <>
+            {motorista && (
+                <CustomMarker
+                key={'intermediate_'}
+                latitude={motorista.latitude}
+                longitude={motorista.longitude}
+                onPress={()=> setOpenCardDriver(true)}
+                color={"#000"}
+                id={`intermediate_`}
                 />
-              ) : (
-                <Marker
+            )}
+             
+              <Marker
                 coordinate={{ latitude: location?.coords?.latitude, longitude: location?.coords?.longitude }}
-                title="User"
+                title="Você"
                 pinColor="#BC1C2C"
               />
-              )
-            }
+            </>
+          ) : (
+            <Marker
+              coordinate={{ latitude: location?.coords?.latitude, longitude: location?.coords?.longitude }}
+              title="Você"
+              pinColor="#BC1C2C"
+            />
           
-
-
+          )
+        }
           {
             destinationLocation && (
               <Marker
                 coordinate={destinationLocation}
-                title="User"
-
+                title="Destino"
                 pinColor="#BC1C2C"
               />
             )
@@ -260,11 +263,11 @@ export default function HomeScreen() {
       {/* {isDriver && (<BtnFloating icon="camera" fn={() => setOpenCamera(true)} right={5} bottom={290} />)} */}
     
       {openCamera && <CameraComponent setOpenCamera={setOpenCamera} />}      
-      {openCardUser && <CardUser setUserSelect={setUserSelect} openCardUser={openCardUser} setOpenCardUser={setOpenCardUser}  />}
+      {openCardUser && <CardUser setUserSelect={userSelect} openCardUser={openCardUser} setOpenCardUser={setOpenCardUser}  />}
       {openListPeople && <ListPeople destinationLocation={destinationLocation} onClosePeople={handlePeopleClose} setLocal={setLocalDestination} />}
       {openListSchool && <ListSchool onCloseSchool={handleSchoolClose} setLocal={setLocalDestination} />}
       {openCardDriver && <CardDriver openCardDriver={openCardDriver} setOpenCardDriver={setOpenCardDriver} />}
-      {openListAdress && <ListAdress open={openListAdress} onCloseList={handleListClose} setLocal={setLocalOriginUser} />}
+      {openListAdress && <ListAdress setLocalTime={location} open={openListAdress} onCloseList={handleListClose} setLocal={setLocalOriginUser} />}
       {openCheck && <CheckUser onCloseCheck={handleCheckClose} setLocal={setLocalDestination} />}
     </View>
   );

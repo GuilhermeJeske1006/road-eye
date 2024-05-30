@@ -63,4 +63,28 @@ export const postAddress = (address: Object): any => async (dispatch: Dispatch<C
   }
 }
 
+export const putActiveAddress = (idAddress: any): any => async (dispatch: Dispatch<CepActionTypes>) => {
+  console.log(idAddress, 'idAddress')
+  dispatch(fetchCepRequest());
+  try {
+    const user_id = await AsyncStorage.getItem('user_id');
+    const response = await api.put(`address/user/activateDisableAddress/${user_id}`, idAddress);
+    dispatch(fetchCepSuccess(response.data));
+    showMessage({
+      message: "Endereço enviado com sucesso!",
+      type: "success",
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    showMessage({
+      message: "Erro ao enviar dados!",
+      type: "danger",
+    });
+    dispatch(fetchCepFailure('Erro ao buscar o CEP.'));
+    throw error;
+  }
+}
+
+
 

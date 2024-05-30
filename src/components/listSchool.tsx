@@ -16,12 +16,9 @@ import CardPeriod from "./cardPeriod";
 
 export default function ListSchool(props: { onCloseSchool: (isOpenCheck: boolean) => void, setLocal: (local: object) => void }) {
   const [openNewAdress, setOpenAdress] = useState<boolean>(false);
-  const [openListSchool, setListSchool] = useState<boolean>(false);
   const [selectedItemGo, setSelectedItemGo] = useState(null);
-  const address = useSelector((state: any) => state.AdressReducer.data);
   const schools = useSelector((state: any) => state.SchoolReducer.data);
   const [openCheck, setOpenCheck] = useState<boolean>(false);
-  const [selectedItemSchool, setSelectedItemSchool] = useState(null);
   const [openPeriod, setOpenPeriod] = useState<boolean>(true);
 
   const dispatch = useDispatch();
@@ -36,15 +33,18 @@ export default function ListSchool(props: { onCloseSchool: (isOpenCheck: boolean
 
   }
 
-
   useEffect(() => {
     dispatch(getSchool());
   }, [])
 
 
-  const onClosePeriod = (isOpenCheck: boolean) => {
+  const onClosePeriod = (isOpenCheck: boolean, type) => {
+    if(type === 1){
+      handleCheckClose()
+    }
     setOpenPeriod(false)
   }
+  
   const setPeriod = (local: object) => {
     setOpenPeriod(true)
   }

@@ -33,12 +33,18 @@ export default function ListPeople(props: { onClosePeople: (isOpenCheck: boolean
   const [selectedItemGo, setSelectedItemGo] = useState(null);
   const [selectedItemSchool, setSelectedItemSchool] = useState(null);
 
+  const peoplesObj = (item) => {
+    setSelectedItemSchool(item)
+    console.log(item.studentRoute.user, 'item')
+  }
+
   const setCloseCamera = (closeCamera: boolean) => {
     setSelectedItemSchool(null)
   }
 
   const renderItemSchool = ({ item }) => (
     <ItemSelected
+    key={item.studentRoute.id}
       item={{
         key: item.studentRoute.id,
         label: item.studentRoute.user.name,
@@ -46,7 +52,7 @@ export default function ListPeople(props: { onClosePeople: (isOpenCheck: boolean
       }}
       IconCamera="camera"
       selectedItemGo={selectedItemSchool}
-      setSelectedItem={setSelectedItemSchool}
+      setSelectedItem={() => peoplesObj(item)}
 
     />
   )

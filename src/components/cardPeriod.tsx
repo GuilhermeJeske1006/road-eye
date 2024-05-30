@@ -8,13 +8,17 @@ import { useSelector } from "react-redux";
 import { getStudentPeriod } from "../store/Route/thunks";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function CardPeriod(props: { onClosePeriod: (isOpenCheck: boolean) => void, setPeriod: (local: object) => void }) {
+export default function CardPeriod(props: { onClosePeriod: (isOpenCheck: boolean, type: any) => void, setPeriod: (local: object) => void }) {
 
   const dispatch = useDispatch();
 
   const handleCheckClose = () => {
-    props.onClosePeriod(false);
+    props.onClosePeriod(false, 1);
 
+  }
+
+  const closePerid = () => {
+    props.onClosePeriod(false, 2);
   }
 
   const submit = async () => {
@@ -31,14 +35,13 @@ export default function CardPeriod(props: { onClosePeriod: (isOpenCheck: boolean
     }if(period == 'Noturno'){
       period = 'NIGHT';
     }
-    console.log(period, currentDate);
     dispatch(getStudentPeriod(period, '2024-05-28'))
 
     await AsyncStorage.setItem('period', period);
 
 
     props.setPeriod(selectedItemGo);
-    handleCheckClose();
+    closePerid();
   }
 
 
@@ -52,6 +55,7 @@ export default function CardPeriod(props: { onClosePeriod: (isOpenCheck: boolean
 
   const renderItemGo = ({ item }) => (
     <ItemSelected
+      key={item.key}
       item={{
         key: item.key,
         label: item.key
