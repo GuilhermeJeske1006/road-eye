@@ -8,6 +8,10 @@ import ModalComponent from "./geral/modal";
 import CameraComponent from "./camera";
 import CardPeriod from "./cardPeriod";
 import { useSelector } from "react-redux";
+import * as Notifications from 'expo-notifications';
+
+
+
 
 export default function ListPeople(props: { onClosePeople: (isOpenCheck: boolean) => void, setLocal: (local: object) => void, destinationLocation: any }) {
   const [openCheck, setOpenCheck] = useState<boolean>(false);
@@ -20,13 +24,22 @@ export default function ListPeople(props: { onClosePeople: (isOpenCheck: boolean
 
   }
 
-  const submit = () => {
-    if (selectedItemGo === null) {
-      return;
-    }
-    console.log(selectedItemGo, 'selectedItemGo');
-    props.setLocal(selectedItemSchool);
-    handleCheckClose();
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+    }),
+  });
+
+  async function handleCallNotification () {
+    Notifications.scheduleNotificationAsync({
+      content: {
+        title: 'Chegou a escola',
+        body: 'O motorista chegou a escola',
+      },
+      trigger: null,
+    });
   }
 
 
@@ -63,7 +76,13 @@ export default function ListPeople(props: { onClosePeople: (isOpenCheck: boolean
           <>
             <Text style={styles.titleAdress}>Alunos da rota</Text>
 
-            {students.length === 0 && <Text>Nenhum aluno encontrado</Text>}
+            {students?.length === 0 && (
+              <>
+              <Text>Nenhum aluno encontrado</Text>
+              <BtnPrimary fn={handleCallNotification} text="Sinalizar que chegou a escola" />
+              </>
+            )}
+            
             <FlatList
               data={students}
               renderItem={renderItemSchool}

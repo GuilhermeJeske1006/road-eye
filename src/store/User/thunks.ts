@@ -98,3 +98,20 @@ export const showUser = (id: any): any => async (dispatch: Dispatch<UserActionTy
 }
 
 
+export const putTokenPush = (data: object): any => async (dispatch: Dispatch<UserActionTypes>) => {
+  dispatch(fetchUserRequest());
+  try {
+    const user_id = await AsyncStorage.getItem('user_id');
+    const response = await api.put(`/users/tokenPush/${user_id}`, data);
+    dispatch(fetchUserSuccess(response.data));
+    return response.data;
+  } catch (error) {
+    showMessage({
+      message: "Erro ao tentar salvar o Token!",
+      type: "danger",
+    });
+    dispatch(fetchUserFailure('Erro ao alterar senha.'));
+  }
+}
+
+

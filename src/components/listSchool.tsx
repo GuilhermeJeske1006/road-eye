@@ -12,6 +12,8 @@ import { useSelector } from "react-redux";
 import { getSchool } from "../store/school/thunks";
 import BtnPrimary from "./geral/btn-primary";
 import CardPeriod from "./cardPeriod";
+import * as Notifications from 'expo-notifications';
+import CardType from "./cardType";
 
 
 export default function ListSchool(props: { onCloseSchool: (isOpenCheck: boolean) => void, setLocal: (local: object) => void }) {
@@ -20,6 +22,7 @@ export default function ListSchool(props: { onCloseSchool: (isOpenCheck: boolean
   const schools = useSelector((state: any) => state.SchoolReducer.data);
   const [openCheck, setOpenCheck] = useState<boolean>(false);
   const [openPeriod, setOpenPeriod] = useState<boolean>(true);
+  const [type, setType] = useState(true);
 
   const dispatch = useDispatch();
 
@@ -33,6 +36,14 @@ export default function ListSchool(props: { onCloseSchool: (isOpenCheck: boolean
 
   }
 
+  const onCloseType = (isOpenCheck: boolean, type) => {
+    if(type === 1){
+      onClosePeriod(false, 1)
+    }
+    setType(false)
+  }
+
+
   useEffect(() => {
     dispatch(getSchool());
   }, [])
@@ -44,7 +55,7 @@ export default function ListSchool(props: { onCloseSchool: (isOpenCheck: boolean
     }
     setOpenPeriod(false)
   }
-  
+
   const setPeriod = (local: object) => {
     setOpenPeriod(true)
   }
@@ -56,10 +67,30 @@ export default function ListSchool(props: { onCloseSchool: (isOpenCheck: boolean
     console.log(selectedItemGo, 'selectedItemGo');
     props.setLocal(selectedItemGo);
     handleCheckClose();
+    handleCallNotification();
+  }
+
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+    }),
+  });
+
+  async function handleCallNotification () {
+    Notifications.scheduleNotificationAsync({
+      content: {
+        title: 'Motorista saindo',
+        body: 'O motorista está a caminho da sua escola!',
+      },
+      trigger: null,
+    });
   }
 
   const renderItem = ({ item }) => (
     <ItemSelected
+      key={item.id}
       item={{
         key: item,
         label: `${item.school.name}`
@@ -75,7 +106,11 @@ export default function ListSchool(props: { onCloseSchool: (isOpenCheck: boolean
 
   return (
     <View>
-      {openPeriod ? (
+      { type ? (
+        <CardType onCloseType={onCloseType} />
+      ) : (
+        <>
+        {openPeriod ? (
         <CardPeriod onClosePeriod={onClosePeriod} setPeriod={setPeriod}  />
       ) : (
         <ModalComponent handleCheckClose={handleCheckClose}>
@@ -89,9 +124,9 @@ export default function ListSchool(props: { onCloseSchool: (isOpenCheck: boolean
   
       </ModalComponent>
       )}
+        </>
+      )}
     </View>
-
-
   );
 }
 

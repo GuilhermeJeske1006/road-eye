@@ -41,11 +41,7 @@ export default function CardUser(props: {
   return (
     <CardModal fn={props.setOpenCardUser}>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <Image
-          source={{ uri: props.setUserSelect.image }}
-          style={{ width: 100, height: 100, borderRadius: 100 }}
-        ></Image>
-        <View style={{ flexDirection: "column", marginLeft: 10 }}>
+        <View style={{ flexDirection: "column"}}>
           <Text style={[styles.title]}>{props.setUserSelect.username}</Text>
           <Text style={[styles.content]}>
             Para o {props.setUserSelect.school}{" "}

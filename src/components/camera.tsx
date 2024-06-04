@@ -2,11 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { Alert, SafeAreaView, StyleSheet, Text, TouchableOpacity, View, Modal, Image } from "react-native";
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import BtnFloating from "./geral/btn-floating";
-import BtnPrimary from "./geral/btn-primary";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch } from "react-redux";
 import { putUpdateImage } from "../store/Route/thunks";
-import base64 from 'react-native-base64'
+import * as FileSystem from 'expo-file-system';
+
 
 export default function CameraComponent(props: {
   setOpenCamera: (openCamera: boolean) => void;
@@ -16,9 +16,10 @@ export default function CameraComponent(props: {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [facing, setFacing] = useState<any>('back');
   const cameraRef = useRef<CameraView>(null);
-  const [capturedPhoto, setCapturedPhoto] = useState<any | null>(null);
+  const [capturedPhoto, setCapturedPhoto] = useState<any>();
   const [permission, requestPermission] = useCameraPermissions();
   const dispatch = useDispatch();
+  const [image, setImage] = useState<any>();
   
 
   useEffect(() => {
@@ -43,15 +44,28 @@ export default function CameraComponent(props: {
 
   async function takePicture() {
     if (cameraRef) {
-      const data = await cameraRef.current.takePictureAsync();
+      const data = await cameraRef.current.takePictureAsync();  
       setCapturedPhoto(data.uri);
+      try {
+        const base64Image = await imageToBase64(data.uri);
+        setImage(base64Image);
+      } catch (error) {
+        console.error('Erro ao converter imagem para base64:', error);
+      }
     }
   }
+  
+  async function imageToBase64(uri) {
+    const base64 = await FileSystem.readAsStringAsync(uri, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
+    return base64;
+  }
 
+ 
   async function sendPicture() {
-    if (capturedPhoto) {
-      
-      dispatch(putUpdateImage(props.people.studentRoute.user.id, capturedPhoto));
+    if(capturedPhoto){
+      dispatch(putUpdateImage(props.people.studentRoute.id, image))
     }
   }
   return (

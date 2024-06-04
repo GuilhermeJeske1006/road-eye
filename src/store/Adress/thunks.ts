@@ -63,6 +63,29 @@ export const postAddress = (address: Object): any => async (dispatch: Dispatch<C
   }
 }
 
+export const postAddressCoordinates = (address: Object): any => async (dispatch: Dispatch<CepActionTypes>) => {
+  console.log(address, 'address')
+  dispatch(fetchCepRequest());
+  try {
+    const user_id = await AsyncStorage.getItem('user_id');
+    const response = await api.post(`/address/user/coordinate/${user_id}`, address);
+    dispatch(fetchCepSuccess(response.data));
+    showMessage({
+      message: "Endereço enviado com sucesso!",
+      type: "success",
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    showMessage({
+      message: "Erro ao enviar dados!",
+      type: "danger",
+    });
+    dispatch(fetchCepFailure('Erro ao buscar o CEP.'));
+    throw error;
+  }
+}
+
 export const putActiveAddress = (idAddress: any): any => async (dispatch: Dispatch<CepActionTypes>) => {
   console.log(idAddress, 'idAddress')
   dispatch(fetchCepRequest());

@@ -6,7 +6,7 @@ import StoreAdress from "./storeAdress";
 import ItemSelected from "./geral/item-seleted";
 import ModalComponent from "./geral/modal";
 import { useDispatch } from "react-redux";
-import { getAddress, postAddress, putActiveAddress } from "../store/Adress/thunks";
+import { getAddress, postAddress, postAddressCoordinates, putActiveAddress } from "../store/Adress/thunks";
 import { useSelector } from "react-redux";
 import { LocationObject } from "expo-location";
 
@@ -63,7 +63,7 @@ export default function ListAdress(props: {
   }
 
   const postRealTimeLocation = () => {
-    dispatch(postAddress(props.setLocalTime));
+    dispatch(postAddressCoordinates(props.setLocalTime.coords));
   }
   useEffect(() => {
     getApiAddress();

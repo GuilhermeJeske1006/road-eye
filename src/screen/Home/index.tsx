@@ -21,7 +21,9 @@ import CardUser from "../../components/cardUser";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-
+import * as Notifications from 'expo-notifications';
+import Constants from "expo-constants"
+import { putTokenPush } from "../../store/User/thunks";
 
 
 export default function HomeScreen() {
@@ -43,10 +45,46 @@ export default function HomeScreen() {
   const [openCamera, setOpenCamera] = useState<boolean>(false);
   const [intermediatePoints, setIntermediatePoints] = useState([]);
   const students = useSelector((state: any) => state.RouteReducer.data);
-  const [motorista] = useState({ latitude: -27.10482619524239, longitude: -48.99447837066357 })
+  const [motorista, setMotorista] = useState<any>({})
   const [userSelect, setUserSelect] = useState(null);
 
+  const [expoPushToken, setExpoPushToken] = useState<String>('');
+  const notificationReceivedRef = useRef<any>();
+  const responseResponseRef = useRef<any>();
+
+  useEffect(() => {
+    handleTokenPush()
+    notificationReceivedRef.current = Notifications.addNotificationReceivedListener(notification => {
+      console.log(notification, 'notification')
+    });
+    responseResponseRef.current = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log(response, 'response')
+    });
+  }, [])
+  
+  const handleTokenPush = async () => {
+    const { status } = await Notifications.getPermissionsAsync();
+    if (status !== 'granted') {
+      alert('Permissão de notificação negada');
+      return;
+    }
+    let token = (await Notifications.getExpoPushTokenAsync({
+      projectId: Constants.expoConfig.extra.eas.projectId || '',
+    })).data;
+    try {
+      await AsyncStorage.setItem('expoPushToken', token);
+      const data = {
+        tokenPush: token
+      }
+      dispatch(putTokenPush(data))
+    } catch (error) {
+      console.error('Error saving expoPushToken:', error);
+    }
+    setExpoPushToken(token);
+  }
+
   const dispatch = useDispatch()
+
 
   useEffect(() => {
     const fetchRole = async () => {
@@ -87,20 +125,81 @@ export default function HomeScreen() {
         timeInterval: 1000,
         distanceInterval: 1,
       },
-       async (location) => {
+      async (location) => {
         const role = await AsyncStorage.getItem('roleEnum');
+  
+        if (role === 'DRIVER') {
+          var socket = new WebSocket('ws://3.92.91.141:8080/roadeye/connect');
+  
+          socket.onopen = async () => {
+            const message = {
+              type: 'authorization',
+              token: await AsyncStorage.getItem('token'),
+              latitude: location.coords.latitude,
+              longitude: location.coords.longitude,
+            };
+            console.log(message, 'iunifeonewfnoweoniew');
+            socket.send(JSON.stringify(message));
+          };
+  
+          // Evento de fechamento da conexão
+          socket.onclose = () => {
+            console.log('Conexão WebSocket fechada');
+          };
+  
+          // Evento de erro
+          socket.onerror = (error) => {
+            console.error('Erro WebSocket:', error);
+          };
+  
+          // Simular o envio de dados para /driverCoordinates (exemplo)
+          setInterval(() => {
+            const driverMessage = {
+              type: 'driverCoordinates',
+              latitude: location.coords.latitude,
+              longitude: location.coords.longitude,
+            };
+  
+            socket.send(JSON.stringify(driverMessage));
+          }, 10000); // Enviar a cada 5 segundos
 
-        if(role == 'DRIVER'){
-          // console.log(location.coords, 'location.coords')
+          // socket.onmessage = (event) => {
+          //   const message = JSON.parse(event.data);
+          //   console.log('Mensagem recebida:', message);
+  
+          //   if (message.type === 'coordinates') {
+          //     // Dados de coordenadas do canal recebidos
+          //     setMotorista(message.coordinates);
+          //     console.log('Dados de coordenadas do canal:', message.coordinates);
+          //     // Faça o que precisar com os dados recebidos
+          //   }
+          // };
+  
+        } 
+        else {
+          // Evento de recebimento de mensagem
+          socket.onmessage = (event) => {
+            const message = JSON.parse(event.data);
+            console.log('Mensagem recebida:', message);
+  
+            if (message.type === 'coordinates') {
+              // Dados de coordenadas do canal recebidos
+              setMotorista(message.coordinates);
+              console.log('Dados de coordenadas do canal:', message.coordinates);
+              // Faça o que precisar com os dados recebidos
+            }
+          };
         }
+  
         setLocation(location);
         mapRef.current?.animateCamera({
           pitch: 70,
           center: location.coords,
-        })
+        });
       }
     );
   }, []);
+  
 
   const handleListClose = (isOpen) => {
     setListAdress(isOpen);
@@ -120,15 +219,9 @@ export default function HomeScreen() {
     setOpenCardUser(true);
   }
 
-  const getDirections = (latitude, longitude) => {
-    setDestinationLocation({
-      latitude: latitude,
-      longitude: longitude
-    })
-  }
   const setLocalOriginUser = (local) => {
     setOriginLocation({
-      latitude: local.latitude, longitude: local.longitude
+      latitude: local?.latitude, longitude: local?.longitude
     })
   }
 
@@ -142,22 +235,25 @@ export default function HomeScreen() {
   };
 
   useEffect(() => {
-    if(destinationLocation){
+    if (destinationLocation && students) { 
       const studentsRota = students.map((item) => {
-        return {
-          latitude: item.userAddress.latitude,
-          longitude: item.userAddress.longitude,
-          username: item.studentRoute.user.username,
-          image: item.studentRoute.imageData,
-          id: item.studentRoute.user.id,
-          phone: item.studentRoute.user.phone,
-          school: item.studentRoute.school.name
+        if(item){
+          return {
+            latitude: item?.userAddress?.latitude,
+            longitude: item?.userAddress?.longitude,
+            username: item?.studentRoute?.user?.username,
+            image: item?.studentRoute?.imageData,
+            id: item?.studentRoute?.user?.id,
+            phone: item?.studentRoute?.user?.phone,
+            school: item?.studentRoute?.school?.name
+          }
         }
       });
-  
+
       setIntermediatePoints(studentsRota); 
     }
-  }, [destinationLocation])
+  }, [destinationLocation, students]); // Include students in the dependency array
+  
 
   return (
     <View style={{  flex: 1 }}>
@@ -171,7 +267,7 @@ export default function HomeScreen() {
             longitude: location.coords.longitude,
             latitudeDelta: 0.005,
             longitudeDelta: 0.005,
-          }}
+          }} 
         >
           {/* Render intermediate points */}
           {intermediatePoints.map((point, index) => (
@@ -202,18 +298,15 @@ export default function HomeScreen() {
             }}
           />
           {/* Render user marker */}
-          {
+          {/* {
           !isDriver ? (
             <>
             {motorista && (
-                <CustomMarker
-                key={'intermediate_'}
-                latitude={motorista.latitude}
-                longitude={motorista.longitude}
-                onPress={()=> setOpenCardDriver(true)}
-                color={"#000"}
-                id={`intermediate_`}
-                />
+                <Marker
+                coordinate={{ latitude: location?.coords?.latitude, longitude: location?.coords?.longitude }}
+                title="Você"
+                pinColor="#fff"
+              />
             )}
              
               <Marker
@@ -230,7 +323,13 @@ export default function HomeScreen() {
             />
           
           )
-        }
+        } */}
+
+            <Marker
+              coordinate={{ latitude: location?.coords?.latitude, longitude: location?.coords?.longitude }}
+              title="Você"
+              pinColor="#BC1C2C"
+            />
           {
             destinationLocation && (
               <Marker

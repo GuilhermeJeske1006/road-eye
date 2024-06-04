@@ -88,7 +88,7 @@ export default function LoginScreen(props: { onAuth: (isAuth: boolean) => void }
             <TouchableOpacity
               onPress={() => setOpenForgot(true)}
             >
-              <Text style={[styles.buttonText, { marginLeft: 20, color: '#000' }]}>Esqueci minha senha?</Text>
+              {/* <Text style={[styles.buttonText, { marginLeft: 20, color: '#000' }]}>Esqueci minha senha?</Text> */}
             </TouchableOpacity>
             <BtnPrimary fn={submitLogin} text="Entrar" />
 

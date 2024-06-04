@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Button,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -17,6 +18,8 @@ import store from "./src/store/store";
 import 'react-native-reanimated';
 import CameraComponent from "./src/components/camera";
 import FlashMessage from "react-native-flash-message";
+
+
 
 const Drawer = createDrawerNavigator();
 
@@ -37,13 +40,15 @@ const MyTheme = {
 export default function App() {
 
   const [isAuth, setIsAuth] = useState<boolean>(false);
-  
+
+
   const handleLogout = () => {
     setIsAuth(false); 
   };
 
   return (
     <Provider store={store}>
+      <StatusBar barStyle="light-content" />
       <View style={{ flex: 1, justifyContent: "center", backgroundColor: '#F2F2F2' }}>
         {isAuth ? (
           <NavigationContainer theme={MyTheme}>
@@ -60,7 +65,7 @@ export default function App() {
             <Text style={styles.text}>Sair</Text>
           </TouchableOpacity>
         )}
-        <FlashMessage style={{ zIndex: 9999 }} position="center"  />
+        <FlashMessage style={{ zIndex: 9999 }} position="top"  />
       </View>
     </Provider>
   );
@@ -74,7 +79,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "absolute",
     right: 10,
-    top: 40,
+    top: 5,
   },
   text: {
     color: "#fff",
