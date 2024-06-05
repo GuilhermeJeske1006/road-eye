@@ -18,6 +18,7 @@ import { getSchool } from "../store/school/thunks";
 import CardPeriod from "./cardPeriod";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { postStudentPeriod } from "../store/Route/thunks";
+import Loading from "./geral/loading";
 
 export default function CheckUser(props: {
   onCloseCheck: (isOpenCheck: boolean) => void;
@@ -28,6 +29,7 @@ export default function CheckUser(props: {
   const [selectedItemGo, setSelectedItemGo] = useState(null);
   const [selectedItemSchool, setSelectedItemSchool] = useState(null);
   const [openPeriod, setOpenPeriod] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const dispatch = useDispatch();
 
@@ -37,10 +39,11 @@ export default function CheckUser(props: {
   };
 
   const submit = async () => {
+    if (selectedItemGo === null || selectedItemSchool === null) {
+      return;
+    }
     try {
-      if (selectedItemGo === null || selectedItemSchool === null) {
-        return;
-      }
+      setLoading(true);
       const period = await AsyncStorage.getItem("period");
 
       let studentStatusEnum;
@@ -65,13 +68,14 @@ export default function CheckUser(props: {
         studentStatusEnum: studentStatusEnum,
         periodEnum: period,
       };
-      dispatch(postStudentPeriod(data));
+      await dispatch(postStudentPeriod(data));
 
       props.setLocal(selectedItemSchool);
       handleCheckClose();
     } catch (error) {
       console.log(error);
     } finally {
+      setLoading(false);
       onClosePeriod(false, 1);
     }
   };
@@ -85,8 +89,8 @@ export default function CheckUser(props: {
   }, []);
 
   const onClosePeriod = (isOpenCheck: boolean, type) => {
-    if(type === 1){
-      handleCheckClose()
+    if (type === 1) {
+      handleCheckClose();
     }
     setOpenPeriod(false);
   };
@@ -103,7 +107,7 @@ export default function CheckUser(props: {
 
   const renderItemGo = ({ item }) => (
     <ItemSelected
-     key={item.key}
+      key={item.key}
       item={{
         key: item.key,
         label: item.key,
@@ -131,28 +135,36 @@ export default function CheckUser(props: {
 
   return (
     <>
-      {openPeriod ? (
-        <CardPeriod onClosePeriod={onClosePeriod} setPeriod={setPeriod} />
+      {loading ? (
+        <Loading />
       ) : (
-        <ModalComponent handleCheckClose={handleCheckClose}>
-          <Text style={styles.titleAdress}>Selecione a sua escola</Text>
+        <>
+          {openPeriod ? (
+            <CardPeriod onClosePeriod={onClosePeriod} setPeriod={setPeriod} />
+          ) : (
+            <ModalComponent handleCheckClose={handleCheckClose}>
+              <Text style={styles.titleAdress}>Selecione a sua escola</Text>
 
-          <FlatList
-            data={schools?.body}
-            renderItem={renderItemSchool}
-            keyExtractor={(item) => item.name}
-          />
+              <FlatList
+                data={schools?.body}
+                renderItem={renderItemSchool}
+                keyExtractor={(item) => item.name}
+              />
 
-          <Text style={[styles.titleAdress, { marginTop: 10 }]}>Você vai?</Text>
+              <Text style={[styles.titleAdress, { marginTop: 10 }]}>
+                Você vai?
+              </Text>
 
-          <FlatList
-            data={data}
-            renderItem={renderItemGo}
-            keyExtractor={(item) => item.key}
-          />
+              <FlatList
+                data={data}
+                renderItem={renderItemGo}
+                keyExtractor={(item) => item.key}
+              />
 
-          <BtnPrimary fn={submit} text="Enviar" />
-        </ModalComponent>
+              <BtnPrimary fn={submit} text="Enviar" />
+            </ModalComponent>
+          )}
+        </>
       )}
     </>
   );

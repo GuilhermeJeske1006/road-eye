@@ -16,10 +16,6 @@ export const fetchCep = (cep: string): any => async (dispatch: Dispatch<CepActio
     dispatch(fetchCepSuccess(response.data));
   } catch (error) {
     dispatch(fetchCepFailure('Erro ao buscar o CEP.'));
-    showMessage({
-      message: "Erro ao buscar dados!",
-      type: "danger",
-    });
   }
 };
 

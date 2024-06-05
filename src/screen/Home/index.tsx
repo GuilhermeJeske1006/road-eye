@@ -44,7 +44,7 @@ export default function HomeScreen() {
   const [openCardUser, setOpenCardUser] = useState<boolean>(false);
   const [openCamera, setOpenCamera] = useState<boolean>(false);
   const [intermediatePoints, setIntermediatePoints] = useState([]);
-  const students = useSelector((state: any) => state.RouteReducer.data);
+  const students = useSelector((state: any) => state.RouteReducer?.data);
   const [motorista, setMotorista] = useState<any>({})
   const [userSelect, setUserSelect] = useState(null);
 
@@ -138,7 +138,7 @@ export default function HomeScreen() {
               latitude: location.coords.latitude,
               longitude: location.coords.longitude,
             };
-            console.log(message, 'iunifeonewfnoweoniew');
+            // console.log(message, 'iunifeonewfnoweoniew');
             socket.send(JSON.stringify(message));
           };
   
@@ -163,18 +163,6 @@ export default function HomeScreen() {
             socket.send(JSON.stringify(driverMessage));
           }, 10000); // Enviar a cada 5 segundos
 
-          // socket.onmessage = (event) => {
-          //   const message = JSON.parse(event.data);
-          //   console.log('Mensagem recebida:', message);
-  
-          //   if (message.type === 'coordinates') {
-          //     // Dados de coordenadas do canal recebidos
-          //     setMotorista(message.coordinates);
-          //     console.log('Dados de coordenadas do canal:', message.coordinates);
-          //     // Faça o que precisar com os dados recebidos
-          //   }
-          // };
-  
         } 
         else {
           // Evento de recebimento de mensagem
@@ -234,26 +222,36 @@ export default function HomeScreen() {
 
   };
 
-  useEffect(() => {
-    if (destinationLocation && students) { 
-      const studentsRota = students.map((item) => {
-        if(item){
-          return {
-            latitude: item?.userAddress?.latitude,
-            longitude: item?.userAddress?.longitude,
-            username: item?.studentRoute?.user?.username,
-            image: item?.studentRoute?.imageData,
-            id: item?.studentRoute?.user?.id,
-            phone: item?.studentRoute?.user?.phone,
-            school: item?.studentRoute?.school?.name
-          }
-        }
-      });
+  const listUser = () => {
+    const studentsRota = students.map((item) => {
+      if (item) {
+        return {
+          latitude: item?.userAddress?.latitude,
+          longitude: item?.userAddress?.longitude,
+          username: item?.studentRoute?.user?.username,
+          image: item?.studentRoute?.imageData,
+          id: item?.studentRoute?.user?.id,
+          phone: item?.studentRoute?.user?.phone,
+          school: item?.studentRoute?.school?.name
+        };
+      }
+      return null; // Return null if item is undefined or invalid
+    }).filter(student => student !== null); // Remove any null values
 
-      setIntermediatePoints(studentsRota); 
+    setIntermediatePoints(studentsRota); 
+  }
+
+  useEffect(() => {
+    if (destinationLocation) { 
+      listUser()
     }
-  }, [destinationLocation, students]); // Include students in the dependency array
+  }, [destinationLocation]);
   
+  useEffect(() => {
+    if (students) { 
+      listUser()
+    }
+  }, [students]);
 
   return (
     <View style={{  flex: 1 }}>

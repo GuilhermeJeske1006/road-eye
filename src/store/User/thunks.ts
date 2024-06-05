@@ -106,10 +106,6 @@ export const putTokenPush = (data: object): any => async (dispatch: Dispatch<Use
     dispatch(fetchUserSuccess(response.data));
     return response.data;
   } catch (error) {
-    showMessage({
-      message: "Erro ao tentar salvar o Token!",
-      type: "danger",
-    });
     dispatch(fetchUserFailure('Erro ao alterar senha.'));
   }
 }

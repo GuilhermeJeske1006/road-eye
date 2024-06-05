@@ -1,12 +1,9 @@
-import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import { FlatList, Modal, StyleSheet, Text, View } from "react-native";
 import { useState } from "react";
 import ItemSelected from "./geral/item-seleted";
 import BtnPrimary from "./geral/btn-primary";
 import ModalComponent from "./geral/modal";
 import CameraComponent from "./camera";
-import CardPeriod from "./cardPeriod";
 import { useSelector } from "react-redux";
 import * as Notifications from 'expo-notifications';
 
@@ -15,8 +12,8 @@ import * as Notifications from 'expo-notifications';
 
 export default function ListPeople(props: { onClosePeople: (isOpenCheck: boolean) => void, setLocal: (local: object) => void, destinationLocation: any }) {
   const [openCheck, setOpenCheck] = useState<boolean>(false);
-  const [openPeriod, setOpenPeriod] = useState<boolean>(true);
   const students = useSelector((state: any) => state.RouteReducer.data);
+  const [selectedItemSchool, setSelectedItemSchool] = useState(null);
 
   const handleCheckClose = () => {
     props.onClosePeople(false);
@@ -43,9 +40,6 @@ export default function ListPeople(props: { onClosePeople: (isOpenCheck: boolean
   }
 
 
-  const [selectedItemGo, setSelectedItemGo] = useState(null);
-  const [selectedItemSchool, setSelectedItemSchool] = useState(null);
-
   const peoplesObj = (item) => {
     setSelectedItemSchool(item)
     console.log(item.studentRoute.user, 'item')
@@ -57,11 +51,11 @@ export default function ListPeople(props: { onClosePeople: (isOpenCheck: boolean
 
   const renderItemSchool = ({ item }) => (
     <ItemSelected
-    key={item.studentRoute.id}
+    key={item.studentRoute?.id}
       item={{
-        key: item.studentRoute.id,
-        label: item.studentRoute.user.name,
-        image: item.studentRoute.imageData
+        key: item.studentRoute?.id,
+        label: item.studentRoute?.user?.name,
+        image: item.studentRoute?.imageData
       }}
       IconCamera="camera"
       selectedItemGo={selectedItemSchool}
@@ -91,7 +85,7 @@ export default function ListPeople(props: { onClosePeople: (isOpenCheck: boolean
 
             {selectedItemSchool && (
               <Modal style={{ flex: 1 }}>
-                <CameraComponent setOpenCamera={setCloseCamera} people={selectedItemSchool} />
+                <CameraComponent setOpenCamera={setCloseCamera} people={selectedItemSchool}   />
               </Modal>
             )}
           </>

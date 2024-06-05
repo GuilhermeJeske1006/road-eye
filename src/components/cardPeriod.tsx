@@ -35,9 +35,11 @@ export default function CardPeriod(props: { onClosePeriod: (isOpenCheck: boolean
     }if(period == 'Noturno'){
       period = 'NIGHT';
     }
-    dispatch(getStudentPeriod(period, '2024-05-28'))
-
     await AsyncStorage.setItem('period', period);
+
+
+    dispatch(getStudentPeriod(period, currentDate))
+
 
 
     props.setPeriod(selectedItemGo);
