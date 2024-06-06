@@ -11,10 +11,19 @@ export default function ModalComponent(props: {
     <Modal
       transparent={true}
       animationType="slide"
-      visible={true} // Control this prop from parent component
+      visible={true} 
+      onRequestClose={props.handleCheckClose}
     >
-      <View style={styles.modalOverlay}>
-        <View style={styles.adressContainer}>
+      <TouchableOpacity 
+        style={styles.modalOverlay} 
+        activeOpacity={1} 
+        onPress={props.handleCheckClose}
+      >
+        <TouchableOpacity 
+          style={styles.addressContainer} 
+          activeOpacity={1}
+          onPress={(e) => e.stopPropagation()}
+        >
           <TouchableOpacity onPress={props.handleCheckClose} style={styles.closeModal}>
             <Ionicons name="remove-outline" size={50} />
           </TouchableOpacity>
@@ -22,8 +31,8 @@ export default function ModalComponent(props: {
           <ScrollView contentContainerStyle={styles.scrollViewContent} nestedScrollEnabled>
             {props.children}
           </ScrollView>
-        </View>
-      </View>
+        </TouchableOpacity>
+      </TouchableOpacity>
     </Modal>
   );
 }
@@ -34,7 +43,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
-  adressContainer: {
+  addressContainer: {
     backgroundColor: "#F2F2F2",
     padding: 20,
     borderTopLeftRadius: 30,
@@ -49,7 +58,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  titleAdress: {
+  titleAddress: {
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 10,
