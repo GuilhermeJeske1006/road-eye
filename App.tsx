@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import {
   Button,
   StatusBar,
@@ -16,7 +16,6 @@ import LoginScreen from "./src/screen/Login";
 import { Provider } from "react-redux";
 import store from "./src/store/store";
 import 'react-native-reanimated';
-import CameraComponent from "./src/components/camera";
 import FlashMessage from "react-native-flash-message";
 
 

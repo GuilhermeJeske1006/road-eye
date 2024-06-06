@@ -1,13 +1,9 @@
 
 import { useEffect, useState } from "react";
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import StoreAdress from "./storeAdress";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import ItemSelected from "./geral/item-seleted";
 import ModalComponent from "./geral/modal";
 import { useDispatch } from "react-redux";
-import { getAddress } from "../store/Adress/thunks";
 import { useSelector } from "react-redux";
 import { getSchool } from "../store/school/thunks";
 import BtnPrimary from "./geral/btn-primary";
@@ -64,7 +60,6 @@ export default function ListSchool(props: { onCloseSchool: (isOpenCheck: boolean
     if (selectedItemGo === null) {
       return;
     }
-    console.log(selectedItemGo, 'selectedItemGo');
     props.setLocal(selectedItemGo);
     handleCheckClose();
     handleCallNotification();
@@ -90,7 +85,7 @@ export default function ListSchool(props: { onCloseSchool: (isOpenCheck: boolean
 
   const renderItem = ({ item }) => (
     <ItemSelected
-      key={item.id}
+      key={item}
       item={{
         key: item,
         label: `${item.school.name}`
@@ -101,8 +96,6 @@ export default function ListSchool(props: { onCloseSchool: (isOpenCheck: boolean
       icon2="school"
     />
   );
-
-
 
   return (
     <View>

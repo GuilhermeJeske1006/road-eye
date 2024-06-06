@@ -8,6 +8,5 @@ export interface Users {
     isUser: boolean;
     isAuth: boolean;
     token: string;
-    id: string;
-    
+    id: string;   
 }

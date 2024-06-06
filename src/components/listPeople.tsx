@@ -42,7 +42,6 @@ export default function ListPeople(props: { onClosePeople: (isOpenCheck: boolean
 
   const peoplesObj = (item) => {
     setSelectedItemSchool(item)
-    console.log(item.studentRoute.user, 'item')
   }
 
   const setCloseCamera = (closeCamera: boolean) => {

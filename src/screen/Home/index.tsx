@@ -55,10 +55,8 @@ export default function HomeScreen() {
   useEffect(() => {
     handleTokenPush()
     notificationReceivedRef.current = Notifications.addNotificationReceivedListener(notification => {
-      console.log(notification, 'notification')
     });
     responseResponseRef.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log(response, 'response')
     });
   }, [])
   
@@ -235,8 +233,8 @@ export default function HomeScreen() {
           school: item?.studentRoute?.school?.name
         };
       }
-      return null; // Return null if item is undefined or invalid
-    }).filter(student => student !== null); // Remove any null values
+      return null; 
+    }).filter(student => student !== null); 
 
     setIntermediatePoints(studentsRota); 
   }
@@ -248,7 +246,7 @@ export default function HomeScreen() {
   }, [destinationLocation]);
   
   useEffect(() => {
-    if (students) { 
+    if (students && Array.isArray(students)){ 
       listUser()
     }
   }, [students]);
@@ -296,7 +294,7 @@ export default function HomeScreen() {
             }}
           />
           {/* Render user marker */}
-          {/* {
+          {
           !isDriver ? (
             <>
             {motorista && (
@@ -321,7 +319,7 @@ export default function HomeScreen() {
             />
           
           )
-        } */}
+        }
 
             <Marker
               coordinate={{ latitude: location?.coords?.latitude, longitude: location?.coords?.longitude }}

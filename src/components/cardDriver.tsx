@@ -1,8 +1,6 @@
-import React, { useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import CardModal from "./geral/card-modal";
-import BtnPrimary from "./geral/btn-primary";
 
 export default function CardDriver(props: {
   openCardDriver: boolean,

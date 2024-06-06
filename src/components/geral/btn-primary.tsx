@@ -1,6 +1,4 @@
-import React from 'react';
 import { StyleSheet, TouchableOpacity, Text } from 'react-native';
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 export default function BtnPrimary(props: {
   fn: () => void;

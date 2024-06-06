@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
-  Alert,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -26,7 +25,7 @@ export default function CameraComponent(props: {
   const cameraRef = useRef<CameraView>(null);
   const [capturedPhoto, setCapturedPhoto] = useState<any>();
   const [permission, requestPermission] = useCameraPermissions();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const dispatch = useDispatch();
   const [image, setImage] = useState<any>();
 
@@ -72,14 +71,10 @@ export default function CameraComponent(props: {
     if (capturedPhoto) {
       try {
         setLoading(true);
-        console.log("Loading começou");
         await dispatch(putUpdateImage(props.people?.studentRoute?.id, image));
-      } catch (error) {
-        console.error("Erro ao enviar imagem:", error);
       } finally {
         const currentDate = new Date().toISOString().split("T")[0];
         await dispatch(getStudentPeriod("", currentDate));
-        console.log("Loading terminou");
         setLoading(false);
         props.setOpenCamera(false);
       }
