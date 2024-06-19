@@ -17,6 +17,7 @@ import { Provider } from "react-redux";
 import store from "./src/store/store";
 import 'react-native-reanimated';
 import FlashMessage from "react-native-flash-message";
+import Teste from "./src/screen/Teste";
 
 
 
@@ -54,6 +55,8 @@ export default function App() {
             <Drawer.Navigator initialRouteName="Home">
               <Drawer.Screen name="Home" component={HomeScreen} />
               <Drawer.Screen name="Perfil" component={ProfileScreen} />
+              {/* <Drawer.Screen name="Teste" component={Teste} /> */}
+
             </Drawer.Navigator>
           </NavigationContainer>
         ) : (

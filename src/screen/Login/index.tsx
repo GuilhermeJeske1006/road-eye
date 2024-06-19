@@ -32,7 +32,7 @@ export default function LoginScreen(props: {
 
   const validateLogin = () => {
     const newErrors = {
-      emailRequired: email === "" ? "Por favor, preencha o campo email" : "",
+      emailRequired: email === "" ? "Por favor, preencha o campo login" : "",
       passwordRequired: senha === "" ? "Por favor, preencha o campo senha" : "",
     };
     setErrors(newErrors);
@@ -86,8 +86,7 @@ export default function LoginScreen(props: {
               )}
               <InputText
                 setFn={(text) => setEmail(text)}
-                placeholder="Digite seu email"
-                attribute={{ keyboardType: "email-address" }}
+                placeholder="Digite seu login"
               />
               {errors.passwordRequired && (
                 <TextError error={errors.passwordRequired} />

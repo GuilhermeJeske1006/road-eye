@@ -63,29 +63,25 @@ export default function ProfileScreen(props: { onAuth: (isAuth: boolean) => void
         }
       }, [user]);
 
-    const formatCpf = (text) => {
+      const formatCpf = (text) => {
         // Remove qualquer caracter que não seja número
-        const formattedCpf = text.replace(/[^\d]/g, '');
-
+        let formattedCpf = text.replace(/[^\d]/g, '');
+    
+        // Limita a 11 caracteres
+        formattedCpf = formattedCpf.slice(0, 11);
+    
         // Adiciona os pontos e o traço conforme o formato do CPF
         if (formattedCpf.length > 3 && formattedCpf.length <= 6) {
-            return formattedCpf.slice(0, 3) + '.' + formattedCpf.slice(3);
+            formattedCpf = formattedCpf.slice(0, 3) + '.' + formattedCpf.slice(3);
         } else if (formattedCpf.length > 6 && formattedCpf.length <= 9) {
-            return formattedCpf.slice(0, 3) + '.' + formattedCpf.slice(3, 6) + '.' + formattedCpf.slice(6);
+            formattedCpf = formattedCpf.slice(0, 3) + '.' + formattedCpf.slice(3, 6) + '.' + formattedCpf.slice(6);
         } else if (formattedCpf.length > 9) {
-            return (
-                formattedCpf.slice(0, 3) +
-                '.' +
-                formattedCpf.slice(3, 6) +
-                '.' +
-                formattedCpf.slice(6, 9) +
-                '-' +
-                formattedCpf.slice(9)
-            );
+            formattedCpf = formattedCpf.slice(0, 3) + '.' + formattedCpf.slice(3, 6) + '.' + formattedCpf.slice(6, 9) + '-' + formattedCpf.slice(9);
         }
-
+    
         return formattedCpf;
     };
+    
 
     const formatPhoneNumber = (text) => {
         // Remove qualquer caracter que não seja número
