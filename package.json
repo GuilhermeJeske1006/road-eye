@@ -55,7 +55,8 @@
     "sockjs-client": "^1.6.1",
     "stompjs": "^2.3.3",
     "webstomp-client": "^1.2.6",
-    "ws": "^8.17.0"
+    "ws": "^8.17.0",
+    "expo-updates": "~0.25.17"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
