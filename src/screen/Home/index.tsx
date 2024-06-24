@@ -118,7 +118,8 @@ export default function HomeScreen() {
   }, []);
 
   useEffect(() => {
-    const startWatchingPosition = async () => {        
+    const startWatchingPosition = async () => {  
+      const role = await AsyncStorage.getItem("roleEnum");      
         websocketRef.current = new WebSocket(websocketUrl);
 
         websocketRef.current.onopen = () => {
@@ -127,7 +128,9 @@ export default function HomeScreen() {
 
         websocketRef.current.onmessage = (event) => {
           const data = JSON.parse(event.data);
-          setMotorista(data);
+          if(role != "DRIVER"){
+            setMotorista(data);
+          }
         };
 
         websocketRef.current.onerror = (error) => {
@@ -156,7 +159,7 @@ export default function HomeScreen() {
               latitude: location.coords.latitude,
               longitude: location.coords.longitude,
             };
-            websocketRef.current.send(JSON.stringify(data));
+              websocketRef.current.send(JSON.stringify(data));
           }
 
           setLocation(location);
